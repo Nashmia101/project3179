@@ -1,0 +1,72 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Average Daily Rainfall (mm) — Peninsular Malaysia",
+  "width": 800,
+  "height": 560,
+
+  "projection": {
+    "type": "mercator"
+  },
+
+  "layer": [
+    {
+      "mark": { "type": "rect", "fill": "#cfe8f7" },
+      "encoding": {
+        "x": { "value": 0 },
+        "x2": { "value": 800 },
+        "y": { "value": 0 },
+        "y2": { "value": 560 }
+      }
+    },
+
+  
+    
+
+    {
+      "data": { "graticule": { "extent": [[99, 0], [106, 8]], "step": [1, 1] } },
+      "mark": {
+        "type": "geoshape",
+        "filled": false,
+        "stroke": "#9aa4b2",
+        "strokeWidth": 0.6,
+        "strokeOpacity": 0.5,
+        "clip": true
+      }
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/Nashmia101/FIT3179/main/ne_10m.json",
+        "format": { "type": "topojson", "feature": "ne_10m_admin_1_states_provinces" }
+      },
+      "transform": [
+        {
+          "lookup": "properties.state",
+          "from": {
+            "data": {
+              "url": "https://raw.githubusercontent.com/Nashmia101/FIT3179/main/rainfall_state_avg.csv"
+            },
+            "key": "State",
+            "fields": ["Avg Rainfall (mm)"]
+          }
+        },
+        { "filter": "datum['Avg Rainfall (mm)'] != null" }
+      ],
+      "mark": { "type": "geoshape", "stroke": "#334155", "strokeWidth": 0.9 },
+      "encoding": {
+        "color": {
+          "field": "Avg Rainfall (mm)",
+          "type": "quantitative",
+          "title": "Avg daily rainfall (mm)",
+          "scale": { "scheme": "purples" },
+          "legend": { "orient": "right", "offset": 60 }
+        },
+        "tooltip": [
+          { "field": "properties.state", "title": "State" },
+          { "field": "Avg Rainfall (mm)", "title": "Avg daily rainfall (mm)", "format": ".2f" }
+        ]
+      }
+    }
+  ],
+
+  "config": { "view": { "stroke": null }, "legend": { "orient": "right" } }
+}
