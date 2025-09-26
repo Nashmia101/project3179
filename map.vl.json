@@ -58,7 +58,7 @@
           "type": "quantitative",
           "title": "Avg daily rainfall (mm)",
           "scale": { "scheme": "purples" },
-          "legend": { "orient": "right", "offset": 60 }
+          "legend": {  "offset": 20 }
         },
         "tooltip": [
           { "field": "properties.state", "title": "State" },
