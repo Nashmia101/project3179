@@ -8,7 +8,7 @@
     "type": "mercator"
   },
 
-  "layer": [
+   "layer": [
     {
       "mark": { "type": "rect", "fill": "#cfe8f7" },
       "encoding": {
