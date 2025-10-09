@@ -12,31 +12,30 @@
 
   <style>
     :root{
-      --accent: #6d28d9;     
+      --bg: #ffffff;
+      --accent: #6d28d9;      
       --text: #0f172a;        
       --muted: #475569;       
+      --card: #ffffff;
     }
 
-    
     html, body {
       margin: 0;
       padding: 0;
       background: var(--bg);
       color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       line-height: 1.45;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
-    
     .wrap {
       max-width: 1200px;
       margin: 28px auto 40px;
       padding: 0 20px;
     }
 
-    
     h1 {
       margin: 0 0 8px 0;
       font-size: clamp(28px, 3.2vw, 40px);
@@ -51,8 +50,6 @@
       text-align: center;
       color: var(--accent);
     }
-
-    
     .desc {
       max-width: 900px;
       margin: 8px auto 20px;
@@ -61,22 +58,20 @@
       font-size: clamp(13px, 1.4vw, 15px);
     }
 
-  
     .card {
-    
+      background: var(--card);
       border-radius: 14px;
       box-shadow:
         0 2px 6px rgba(15, 23, 42, 0.06),
         0 12px 28px rgba(15, 23, 42, 0.08);
       padding: clamp(8px, 1.8vw, 14px);
+      margin-bottom: 28px;
     }
 
-  
-    #vis {
-      min-height: 520px;
+    .vis {
+      min-height: 520px; 
     }
 
-  
     @media (max-width: 480px){
       .wrap { margin-top: 18px; }
     }
@@ -85,22 +80,33 @@
 
 <body>
   <main class="wrap">
-    <h1>Average Daily Rainfall by State of <span style="white-space:nowrap;">Peninsular Malaysia Across 2020</span></h1>
-    <h2>Choropleth of mean daily rainfall (mm)</h2>
+    
+    <h1>Average Daily Rainfall by State of <span style="white-space:nowrap;">Peninsular Malaysia</span></h1>
+
+   
+    <h2>Choropleth Map of mean daily rainfall (mm)</h2>
     <p class="desc">
       This map shows the average daily rainfall (in millimetres) for each state in Peninsular Malaysia across 2020.
-      Values are joined to state boundaries and coloured with a sequential purple scale for clear comparison.
+      
     </p>
-
     <section class="card">
-      <div id="vis" aria-label="Choropleth map of average daily rainfall in Peninsular Malaysia"></div>
+      <div id="mapVis" class="vis" aria-label="Choropleth map of average daily rainfall in Peninsular Malaysia"></div>
+    </section>
+
+   
+    <h2>Line Chart of Rainfall Trend from 2014 to 2020</h2>
+    <p class="desc">
+      This line chart visualizes Average Rainfall trend across Peninsular Malaysia States from 2014 to 2020.
+    </p>
+    <section class="card">
+      <div id="trendVis" class="vis" aria-label="Line chart of average daily rainfall by year for a selected state"></div>
     </section>
   </main>
 
-  <script>
-  
-    vegaEmbed('#vis', 'map.vl.json', { actions: false })
-      .catch(console.error);
-  </script>
+ <script>
+  const cb = `?v=${Date.now()}`; 
+  vegaEmbed('#mapVis',  'map.vl.json'  + cb, { actions:false, loader:{target:'http', options:{cache:'no-store'}}});
+  vegaEmbed('#trendVis','line.vl.json' + cb, { actions:false, loader:{target:'http', options:{cache:'no-store'}}});
+</script>
 </body>
 </html>
