@@ -3,37 +3,112 @@
   "title": "Rainfall vs Water Production (select a Year)",
   "background": "#f3f4f6",
   "height": 480,
-  "padding": {"left": 60, "right": 24, "top": 10, "bottom": 50},
+  "padding": { "left": 60, "right": 24, "top": 10, "bottom": 50 },
 
   "data": {
-    "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/water_production_aligned_to_rainfall_2014_2020.csv",
-    "format": {"type": "csv"}
+    "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/rainfall_production_by_state_year.csv",
+    "format": { "type": "csv" }
   },
 
-  "params": [{
-    "name": "YearPick",
-    "value": 2020,
-    "bind": {"input": "select", "name": "Year: ",
-             "options": [2014,2015,2016,2017,2018,2019,2020]}
-  }],
-
-  "transform": [
-    {"filter": "toNumber(datum.Year) === toNumber(YearPick)"}
+  "params": [
+    { "name": "YearPick", "value": 2020,
+      "bind": { "input": "select", "name": "Year: ", "options": [2014,2015,2016,2017,2018,2019,2020] } }
   ],
 
-  "mark": {"type": "point", "tooltip": true, "opacity": 0.9, "size": 90},
+  "transform": [
+    { "filter": "toNumber(datum.Year) === toNumber(YearPick)" },
+    { "calculate": "toNumber(datum.Avg_Rainfall_mm)", "as": "Rain" },
+    { "calculate": "toNumber(datum.Water_Production)", "as": "Prod" },
+    { "filter": "!isNaN(datum.Rain) && !isNaN(datum.Prod)" },
+    { "window": [ { "op": "rank", "as": "rankProd" } ], "sort": [ { "field": "Prod", "order": "ascending" } ] },
+    { "window": [ { "op": "rank", "as": "rankRain" } ], "sort": [ { "field": "Rain", "order": "ascending" } ] }
+  ],
 
   "encoding": {
-    "x": {"field": "Rainfall", "type": "quantitative", "title": "Rainfall (mm)"},
-    "y": {"field": "Water_Production", "type": "quantitative", "title": "Water Production"},
-    "color": {"field": "State", "type": "nominal", "legend": {"title": "State"}},
-    "tooltip": [
-      {"field": "State", "type": "nominal"},
-      {"field": "Year", "type": "ordinal"},
-      {"field": "Rainfall", "type": "quantitative", "format": ",.2f"},
-      {"field": "Water_Production", "type": "quantitative", "title": "Water Production", "format": ",.0f"}
-    ]
+    "x": { "field": "Rain", "type": "quantitative", "title": "Average Daily Rainfall (mm)" },
+    "y": { "field": "Prod", "type": "quantitative", "title": "Water Production" }
   },
 
-  "config": {"view": {"stroke": null}}
+  "layer": [
+    {
+      "mark": { "type": "point", "filled": true, "opacity": 0.9, "size": 110 },
+      "encoding": {
+        "color": { "field": "State", "type": "nominal", "legend": { "title": "State" } },
+        "tooltip": [
+          { "field": "State" }, { "field": "Year" },
+          { "field": "Rain", "type": "quantitative", "title": "Rainfall (mm)", "format": ",.2f" },
+          { "field": "Prod", "type": "quantitative", "title": "Water Production", "format": ",.0f" }
+        ]
+      }
+    },
+
+    { "transform": [ { "regression": "Prod", "on": "Rain" } ],
+      "mark": { "type": "line", "strokeDash": [6,4], "strokeWidth": 2, "color": "#6b7280" } },
+
+    {
+      "transform": [
+        { "window": [ { "op": "rank", "as": "r" } ], "sort": [ { "field": "Prod", "order": "descending" } ] },
+        { "filter": "datum.r == 1" },
+        { "calculate": "'Highest production: ' + datum.State + ' (' + format(datum.Prod, ',.0f') + ')'", "as": "label" }
+      ],
+      "layer": [
+        { "mark": { "type": "point", "filled": true, "size": 220, "color": "#111827" } },
+        { "mark": { "type": "text", "dy": 12, "fontSize": 12, "fontWeight": "bold", "color": "#111827", "baseline": "top", "clip": true },
+          "encoding": { "text": { "field": "label" } } }
+      ]
+    },
+
+   
+    {
+      "transform": [
+        { "window": [ { "op": "rank", "as": "r" } ], "sort": [ { "field": "Rain", "order": "descending" } ] },
+        { "filter": "datum.r == 1" },
+        { "calculate": "'Highest rainfall: ' + datum.State + ' (' + format(datum.Rain, ',.2f') + ' mm)'", "as": "label" }
+      ],
+      "layer": [
+        { "mark": { "type": "point", "filled": true, "size": 220, "color": "#0ea5e9" } },
+        { "mark": { "type": "text", "dx": -8, "dy": -36, "fontSize": 12, "fontWeight": "bold",
+                    "color": "#0ea5e9", "align": "right", "baseline": "bottom", "clip": true },
+          "encoding": { "text": { "field": "label" } } }
+      ]
+    },
+
+    {
+      "transform": [
+        { "filter": "datum.rankProd == 1 && datum.rankRain == 1" },
+        { "calculate": "'Lowest rainfall & production: ' + datum.State + ' (' + format(datum.Rain, ',.2f') + ' mm, ' + format(datum.Prod, ',.0f') + ')'", "as": "label" }
+      ],
+      "layer": [
+        { "mark": { "type": "point", "filled": true, "size": 240, "color": "#f97316" } },
+        { "mark": { "type": "text", "dx": 10, "dy": -14, "fontSize": 12, "fontWeight": "bold", "color": "#f97316", "align": "left", "clip": true },
+          "encoding": { "text": { "field": "label" } } }
+      ]
+    },
+
+    {
+      "transform": [
+        { "filter": "datum.rankProd == 1 && datum.rankRain != 1" },
+        { "calculate": "'Lowest production: ' + datum.State + ' (' + format(datum.Prod, ',.0f') + ')'", "as": "label" }
+      ],
+      "layer": [
+        { "mark": { "type": "point", "filled": true, "size": 220, "color": "#ef4444" } },
+        { "mark": { "type": "text", "dx": 8, "dy": -10, "fontSize": 12, "fontWeight": "bold", "color": "#ef4444", "clip": true },
+          "encoding": { "text": { "field": "label" } } }
+      ]
+    },
+
+    {
+      "transform": [
+        { "filter": "datum.rankRain == 1 && datum.rankProd != 1" },
+        { "calculate": "'Lowest rainfall: ' + datum.State + ' (' + format(datum.Rain, ',.2f') + ' mm)'", "as": "label" }
+      ],
+      "layer": [
+        { "mark": { "type": "point", "filled": true, "size": 220, "color": "#f59e0b" } },
+        { "mark": { "type": "text", "dx": 8, "dy": 14, "fontSize": 12, "fontWeight": "bold", "color": "#f59e0b", "clip": true },
+          "encoding": { "text": { "field": "label" } } }
+      ]
+    }
+  ],
+
+  "config": { "view": { "stroke": null } }
 }
