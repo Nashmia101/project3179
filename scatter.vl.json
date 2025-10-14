@@ -1,0 +1,39 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Rainfall vs Water Production (select a Year)",
+  "background": "#f3f4f6",
+  "height": 480,
+  "padding": {"left": 60, "right": 24, "top": 10, "bottom": 50},
+
+  "data": {
+    "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/water_production_aligned_to_rainfall_2014_2020.csv",
+    "format": {"type": "csv"}
+  },
+
+  "params": [{
+    "name": "YearPick",
+    "value": 2020,
+    "bind": {"input": "select", "name": "Year: ",
+             "options": [2014,2015,2016,2017,2018,2019,2020]}
+  }],
+
+  "transform": [
+    {"filter": "toNumber(datum.Year) === toNumber(YearPick)"}
+  ],
+
+  "mark": {"type": "point", "tooltip": true, "opacity": 0.9, "size": 90},
+
+  "encoding": {
+    "x": {"field": "Rainfall", "type": "quantitative", "title": "Rainfall (mm)"},
+    "y": {"field": "Water_Production", "type": "quantitative", "title": "Water Production"},
+    "color": {"field": "State", "type": "nominal", "legend": {"title": "State"}},
+    "tooltip": [
+      {"field": "State", "type": "nominal"},
+      {"field": "Year", "type": "ordinal"},
+      {"field": "Rainfall", "type": "quantitative", "format": ",.2f"},
+      {"field": "Water_Production", "type": "quantitative", "title": "Water Production", "format": ",.0f"}
+    ]
+  },
+
+  "config": {"view": {"stroke": null}}
+}
