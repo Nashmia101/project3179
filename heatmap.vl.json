@@ -1,44 +1,113 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Daily Rainfall — Calendar Heatmap",
-  "config": {"view": {"stroke": null}},
-  "data": {
-    "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/monthly_rainfall_mean_only%20(1).csv",
-    "format": {"type": "csv"}
+  "usermeta": {
+    "embedOptions": {
+      "tooltip": {
+        "anchor": "left",
+        "offsetX": 8,
+        "style": { "textAlign": "left" }
+      }
+    }
   },
-
+  "title": "Daily Rainfall — Calendar Heatmap",
+  "config": {
+    "view": { "stroke": null },
+    "background": "#f3f4f6"
+  },
+  "data": {
+    "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/daily_rainfall_peninsular_my_2014_2020_ccsm3a1fi_fixed.csv",
+    "format": { "type": "csv" }
+  },
   "params": [
     {
       "name": "StatePick",
       "value": "Johor",
-      "bind": {"input": "select", "name": "State: ",
-        "options": ["Johor","Kedah","Kelantan","Melaka","Negeri Sembilan","Pahang","Perak","Perlis","Pulau Pinang","Selangor","Terengganu","Kuala Lumpur","Putrajaya"]
+      "bind": {
+        "input": "select",
+        "name": "State: ",
+        "options": ["Johor","Kedah","Kelantan","Melaka","Negeri Sembilan","Pahang","Penang","Perak","Perlis","Selangor","Selangor-Wilayah","Terengganu"]
       }
     }
   ],
-
   "transform": [
-    {"filter": "datum.State == StatePick"},
-    {"calculate": "toDate(datum.Year + '-' + datum.Month + '-' + datum.Day)", "as": "Date"}
+    { "filter": "datum.State == StatePick" },
+    { "calculate": "toDate(datum.Year + '-' + datum.Month + '-' + datum.Day)", "as": "Date" },
+    { "calculate": "floor((date(datum.Date) + day(datetime(year(datum.Date), month(datum.Date), 1)) - 1)/7)", "as": "weekOfMonth" }
   ],
-
-  "facet": {"row": {"field": "Year", "type": "ordinal", "sort": "ascending", "title": null}},
+  "spacing": 8,
+  "facet": {
+    "row": { "field": "Year", "type": "ordinal", "sort": "ascending", "title": null }
+  },
   "spec": {
-    "width": 940,
-    "height": 90,
-    "mark": {"type": "rect", "tooltip": true},
-    "encoding": {
-      "x": {"timeUnit": "utcyearweek", "field": "Date", "title": "Week of Year"},
-      "y": {"timeUnit": "day", "field": "Date", "type": "ordinal", "title": null},
-      "color": {
-        "field": "Rainfall (mm)", "type": "quantitative",
-        "title": "Rainfall (mm)", "legend": {"orient": "right"},
-        "scale": {"scheme": "blues"}
-      },
-      "opacity": {
-        "condition": {"test": "isValid(datum['Rainfall (mm)'])", "value": 1},
-        "value": 0.2
+    "facet": {
+      "column": {
+        "timeUnit": "month",
+        "field": "Date",
+        "title": null,
+        "header": { "labels": true, "format": "%b", "labelFontWeight": "bold", "labelOrient": "top" }
       }
+    },
+    "spec": {
+      "width": 90,
+      "height": 90,
+      "layer": [
+        {
+          "mark": { "type": "rect", "cornerRadius": 3, "stroke": null },
+          "encoding": {
+            "x": {
+              "field": "weekOfMonth",
+              "type": "ordinal",
+              "axis": { "labels": false, "ticks": false, "title": null },
+              "scale": { "domain": [0,1,2,3,4,5], "paddingInner": 0.08, "paddingOuter": 0 }
+            },
+            "y": {
+              "timeUnit": "day",
+              "field": "Date",
+              "type": "ordinal",
+              "sort": "ascending",
+              "axis": { "title": null, "grid": false },
+              "scale": { "paddingInner": 0.08, "paddingOuter": 0 }
+            },
+            "color": { "value": "#e5e7eb" }
+          }
+        },
+        {
+          "transform": [
+            { "filter": "isValid(datum['Rainfall (mm)']) && datum['Rainfall (mm)'] > 0" }
+          ],
+          "mark": { "type": "rect", "cornerRadius": 3, "stroke": null },
+          "encoding": {
+            "x": {
+              "field": "weekOfMonth",
+              "type": "ordinal",
+              "scale": { "domain": [0,1,2,3,4,5], "paddingInner": 0.08, "paddingOuter": 0 },
+              "axis": { "labels": false, "ticks": false, "title": null }
+            },
+            "y": {
+              "timeUnit": "day",
+              "field": "Date",
+              "type": "ordinal",
+              "sort": "ascending",
+              "scale": { "paddingInner": 0.08, "paddingOuter": 0 },
+              "axis": { "title": null, "grid": false }
+            },
+            "color": {
+              "field": "Rainfall (mm)",
+              "type": "quantitative",
+              "scale": {
+                "type": "threshold",
+                "domain": [0.01, 0.1, 0.25, 0.5, 1, 2, 3, 5, 7, 10, 15, 20, 25, 30, 35, 40, 45, 50],
+                "scheme": { "name": "purples", "count": 19 }
+              },
+              "legend": { "title": "Rainfall (mm)" }
+            },
+            "tooltip": [
+              { "field": "Date", "type": "temporal", "title": "Date", "format": "%b %d, %Y" },
+              { "field": "Rainfall (mm)", "type": "quantitative", "title": "Rainfall", "format": ".2f" }
+            ]
+          }
+        }
+      ]
     }
   }
 }

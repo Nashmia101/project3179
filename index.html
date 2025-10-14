@@ -50,6 +50,14 @@
     </section>
 
     
+    <h2>Water Production by State and Year</h2>
+    <p class="desc">
+      Grouped bars compare total water production across states, with an option to filter by year.
+    </p>
+    <section class="card">
+      <div id="barVis" class="vis" aria-label="Bar chart of water production by state and year"></div>
+    </section>
+
     <h2>Calendar Heatmap — Daily Rainfall by Year</h2>
     <p class="desc">
       Daily values shown as tiny squares. Use the state dropdown in the spec (if included) to switch regions.
@@ -72,7 +80,8 @@
 
     loadAndEmbed('#mapVis',    'map.vl.json');
     loadAndEmbed('#trendVis',  'line.vl.json');
-    loadAndEmbed('#heatmapVis','heatmap.vl.json');  
+    loadAndEmbed('#barVis',    'barchart.vl.json');   
+    loadAndEmbed('#heatmapVis','heatmap.vl.json');
   </script>
 </body>
 </html>
