@@ -1,0 +1,44 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Daily Rainfall — Calendar Heatmap",
+  "config": {"view": {"stroke": null}},
+  "data": {
+    "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/monthly_rainfall_mean_only%20(1).csv",
+    "format": {"type": "csv"}
+  },
+
+  "params": [
+    {
+      "name": "StatePick",
+      "value": "Johor",
+      "bind": {"input": "select", "name": "State: ",
+        "options": ["Johor","Kedah","Kelantan","Melaka","Negeri Sembilan","Pahang","Perak","Perlis","Pulau Pinang","Selangor","Terengganu","Kuala Lumpur","Putrajaya"]
+      }
+    }
+  ],
+
+  "transform": [
+    {"filter": "datum.State == StatePick"},
+    {"calculate": "toDate(datum.Year + '-' + datum.Month + '-' + datum.Day)", "as": "Date"}
+  ],
+
+  "facet": {"row": {"field": "Year", "type": "ordinal", "sort": "ascending", "title": null}},
+  "spec": {
+    "width": 940,
+    "height": 90,
+    "mark": {"type": "rect", "tooltip": true},
+    "encoding": {
+      "x": {"timeUnit": "utcyearweek", "field": "Date", "title": "Week of Year"},
+      "y": {"timeUnit": "day", "field": "Date", "type": "ordinal", "title": null},
+      "color": {
+        "field": "Rainfall (mm)", "type": "quantitative",
+        "title": "Rainfall (mm)", "legend": {"orient": "right"},
+        "scale": {"scheme": "blues"}
+      },
+      "opacity": {
+        "condition": {"test": "isValid(datum['Rainfall (mm)'])", "value": 1},
+        "value": 0.2
+      }
+    }
+  }
+}

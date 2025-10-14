@@ -1,115 +1,99 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Average Rainfall Trend of Peninsular Malaysian States Across Years from 2014 to 2020",
-  "width": 720,
-  "height": 420,
-  "padding": { "bottom": 56 },
+  "title": "Monthly Average Daily Rainfall — Small Multiples by State",
+
+  "padding": { "top": 16, "right": 8, "bottom": 28, "left": 6 },   
+
+  "columns": 4,
 
   "params": [
     {
-      "name": "StatePick",
-      "value": "Pahang",
-      "bind": {
-        "input": "select",
-        "name": "State: ",
-        "options": [
-          "Johor","Kedah","Kelantan","Melaka","NSembilan",
-          "Pahang","Penang","Perak","Perlis",
-          "Selangor","Selangor-Wilayah","Terengganu"
-        ]
-      }
+      "name": "YearPick",
+      "value": 2020,
+      "bind": { "input": "select", "name": "Year: ", "options": [2014,2015,2016,2017,2018,2019,2020] }
     }
   ],
 
   "data": {
-    "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/rainfall_state_year_avg.csv"
+    "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/monthly_rainfall_mean_only%20(1).csv",
+    "format": {"type": "csv"}
   },
 
   "transform": [
-    { "filter": "datum.State == StatePick" },
-    { "calculate": "toNumber(datum.Avg_Rainfall_mm)", "as": "rain_mm" },
-    { "calculate": "toNumber(datum.Year)", "as": "year_num" }
+    { "calculate": "toNumber(datum.year)", "as": "year_num" },
+    { "calculate": "toNumber(datum.month)", "as": "mnum" },
+    { "calculate": "toNumber(datum.month_mean_mm)", "as": "mm" },
+    { "filter": "datum.year_num == YearPick" },
+    { "calculate": "['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][datum.mnum-1]", "as": "month_label" }
   ],
 
-  "layer": [
-    {
-      "mark": {
-        "type": "line",
-        "point": { "filled": true, "size": 64 },
-        "strokeWidth": 2,
-        "clip": true
-      },
-      "encoding": {
-        "x": {
-          "field": "year_num",
-          "type": "quantitative",
-          "title": "Year",
-          "scale": { "domain": [2013.5, 2020.5] },
-          "axis": { "tickMinStep": 1, "format": "d" }
-        },
-        "y": {
-          "field": "rain_mm",
-          "type": "quantitative",
-          "title": "Average daily rainfall (mm)",
-          "scale": { "domainMin": 0, "nice": true }
-        },
-        "color": { "value": "#5b21b6" },
-        "tooltip": [
-          { "field": "State", "type": "nominal" },
-          { "field": "year_num", "type": "quantitative", "title": "Year", "format": "d" },
-          { "field": "rain_mm", "type": "quantitative", "title": "Average daily rainfall (mm)", "format": ".2f" }
-        ]
-      }
-    },
+  "facet": {
+    "field": "state",
+    "type": "nominal",
+    "title": null,
+    "header": { "labelFontSize": 12 }
+  },
 
-    {
-      "transform": [
-        { "window": [{ "op": "rank", "as": "r" }], "sort": [{ "field": "rain_mm", "order": "descending" }] },
-        { "filter": "datum.r == 1" },
-        {
-          "calculate": "'Highest Average Rainfall for this state is recorded in year: ' + format(datum.year_num,'d') + ' (' + format(datum.rain_mm,'.2f') + ' mm)'",
-          "as": "max_label"
+  "spec": {
+    "width": 240,
+    "height": 140,
+    "layer": [
+      {
+        "mark": {"type": "area", "opacity": 0.18, "clip": true},
+        "encoding": {
+          "x": {
+            "field": "mnum", "type": "ordinal", "title": null,
+            "scale": {"domain": [1,2,3,4,5,6,7,8,9,10,11,12]},
+            "axis": {
+              "values": [1,2,3,4,5,6,7,8,9,10,11,12],
+              "labelExpr": "['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][datum.value-1]",
+              "labelAngle": 0, "labelFontSize": 10, "tickSize": 0, "labelOverlap": false
+            }
+          },
+          "y": {
+            "field": "mm", "type": "quantitative",
+            "title": "Average rainfall (mm)",
+            "scale": {"zero": true, "nice": true},
+            "axis": {
+              "labelFontSize": 10,
+              "titleFontSize": 10,
+              "offset": 0,          
+              "titlePadding": 2,    
+              "labelPadding": 2     
+            }
+          },
+          "color": {
+            "field": "state", "type": "nominal",
+            "legend": null,
+            "scale": { "scheme": "tableau10" }
+          },
+          "tooltip": [
+            {"field": "state", "title": "State"},
+            {"field": "year_num", "type": "quantitative", "title": "Year", "format": "d"},
+            {"field": "month_label", "title": "Month"},
+            {"field": "mm", "type": "quantitative", "title": "Average rainfall (mm)", "format": ".2f"}
+          ]
         }
-      ],
-      "mark": {
-        "type": "text",
-        "align": "right",
-        "baseline": "top",
-        "fontSize": 15,
-        "fontWeight": "bold",
-        "color": "#111111"
       },
-      "encoding": {
-        "x": { "value": 710 },
-        "y": { "value": 14 },
-        "text": { "field": "max_label" }
-      }
-    },
-
-    {
-      "transform": [
-        { "window": [{ "op": "rank", "as": "r" }], "sort": [{ "field": "rain_mm", "order": "ascending" }] },
-        { "filter": "datum.r == 1" },
-        {
-          "calculate": "'Lowest Average Rainfall for this state is recorded in year: ' + format(datum.year_num,'d') + ' (' + format(datum.rain_mm,'.2f') + ' mm)'",
-          "as": "min_label"
+      {
+        "mark": {"type": "line", "point": {"filled": true, "size": 22}, "strokeWidth": 2, "clip": true},
+        "encoding": {
+          "x": {"field": "mnum", "type": "ordinal"},
+          "y": {"field": "mm", "type": "quantitative"},
+          "color": {
+            "field": "state", "type": "nominal",
+            "legend": null,
+            "scale": { "scheme": "tableau10" }
+          }
         }
-      ],
-      "mark": {
-        "type": "text",
-        "align": "left",
-        "baseline": "bottom",
-        "fontSize": 15,
-        "fontWeight": "bold",
-        "color": "#111111"
-      },
-      "encoding": {
-        "x": { "value": 10 },
-        "y": { "value": 410 },
-        "text": { "field": "min_label" }
       }
-    }
-  ],
+    ]
+  },
 
-  "config": { "view": { "stroke": null }, "axis": { "grid": true } }
+  "resolve": { "scale": { "y": "independent" } },
+
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": true }
+  }
 }

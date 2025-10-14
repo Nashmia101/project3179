@@ -1,193 +1,121 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Average Daily Rainfall (mm) — Peninsular Malaysia",
-  "width": 800,
-  "height": 560,
-  "projection": { "type": "mercator" },
-  "padding": { "bottom": 60 },
+  "width": 1200,
+  "height": 500,
+  "projection": {"type": "mercator"},
+  "config": {"view": {"stroke": "transparent"}},
 
   "params": [
     {
-      "name": "MinimumRainfallThreshold",
-      "value": 2,
+      "name": "year_selection",
+      "value": 2020,
       "bind": {
-        "input": "range",
-        "min": 2,
-        "max": 7,
-        "step": 0.1,
-        "name": "Show states with rainfall ≥ (mm):"
+        "input": "select",
+        "options": [2014,2015,2016,2017,2018,2019,2020],
+        "labels": ["2014","2015","2016","2017","2018","2019","2020"],
+        "name": "Select Year: "
       }
     }
   ],
 
   "layer": [
     {
-      "mark": { "type": "rect", "fill": "#cfe8f7" },
-      "encoding": { "x": { "value": 0 }, "x2": { "value": 800 }, "y": { "value": 0 }, "y2": { "value": 560 } }
-    },
-
-    {
-      "data": { "graticule": { "extent": [[99, 0], [106, 8]], "step": [1, 1] } },
-      "mark": { "type": "geoshape", "filled": false, "stroke": "#9aa4b2", "strokeWidth": 0.6, "strokeOpacity": 0.5, "clip": true }
+      "data": { "graticule": { "extent": [[99, 0], [120, 8]], "step": [1, 1] } },
+      "mark": { "type": "geoshape", "fill": null, "stroke": "lightgrey", "strokeWidth": 0.5 }
     },
 
     {
       "data": {
         "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/ne_10m.json",
-        "format": { "type": "topojson", "feature": "ne_10m_admin_1_states_provinces" }
+        "format": { "type": "topojson", "feature": "ne_10m_admin_0_countries" }
       },
-      "transform": [
-        {
-          "lookup": "properties.state",
-          "from": {
-            "data": { "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/rainfall_state_avg.csv" },
-            "key": "State",
-            "fields": ["Avg Rainfall (mm)"]
-          }
-        },
-        { "filter": "datum['Avg Rainfall (mm)'] != null" },
-        { "filter": "toNumber(datum['Avg Rainfall (mm)']) >= toNumber(MinimumRainfallThreshold)" }
-      ],
-      "mark": { "type": "geoshape", "stroke": "#334155", "strokeWidth": 0.9 },
-      "encoding": {
-        "color": {
-          "field": "Avg Rainfall (mm)",
-          "type": "quantitative",
-          "title": "Average daily rainfall (mm)",
-          "scale": { "scheme": "purples", "domain": [2, 7], "nice": false },
-          "legend": { "offset": 20 }
-        },
-        "tooltip": [
-          { "field": "properties.state", "title": "State" },
-          { "field": "Avg Rainfall (mm)", "title": "Average daily rainfall (mm)", "format": ".2f" }
-        ]
-      }
+      "mark": { "type": "geoshape", "fill": "lightgrey", "stroke": "black", "strokeWidth": 0.6 }
     },
 
     {
-      "data": {
-        "values": [
-          { "State": "Terengganu", "lon": 103.1, "lat": 5.1 },
-          { "State": "Kelantan", "lon": 102.2, "lat": 6.1 },
-          { "State": "Pahang", "lon": 102.3, "lat": 3.7 },
-          { "State": "Johor", "lon": 103.5, "lat": 1.9 },
-          { "State": "Perak", "lon": 101.0, "lat": 4.8 },
-          { "State": "Selangor", "lon": 101.5, "lat": 3.1 },
-          { "State": "Negeri Sembilan", "lon": 102.2, "lat": 2.7 },
-          { "State": "Melaka", "lon": 102.3, "lat": 2.2 },
-          { "State": "Kedah", "lon": 100.6, "lat": 6.1 },
-          { "State": "Perlis", "lon": 100.2, "lat": 6.6 },
-          { "State": "Pulau Pinang", "lon": 100.33, "lat": 5.35 }
-        ]
-      },
+      "data": { "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/rainfall_state_year_avg.csv" },
       "transform": [
+        { "filter": "toNumber(datum.Year) == toNumber(year_selection)" },
+        { "filter": "isValid(datum['Avg_Rainfall_mm']) && datum['Avg_Rainfall_mm'] != null" },
+        { "calculate": "toNumber(datum['Avg_Rainfall_mm'])", "as": "rain_mm" },
         {
           "lookup": "State",
           "from": {
-            "data": { "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/rainfall_state_avg.csv" },
-            "key": "State",
-            "fields": ["Avg Rainfall (mm)"]
-          }
-        },
-        { "filter": "datum['Avg Rainfall (mm)'] != null" },
-        { "filter": "toNumber(datum['Avg Rainfall (mm)']) >= toNumber(MinimumRainfallThreshold)" }
+            "data": {
+              "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/ne_10m.json",
+              "format": { "type": "topojson", "feature": "ne_10m_admin_1_states_provinces" }
+            },
+            "key": "properties.state"
+          },
+          "as": "geo"
+        }
       ],
-      "mark": { "type": "text", "fontSize": 12, "fontWeight": 900, "color": "#000000" },
+      "mark": { "type": "geoshape", "stroke": "black", "strokeWidth": 0.8 },
       "encoding": {
-        "longitude": { "field": "lon" },
-        "latitude": { "field": "lat" },
-        "text": { "field": "State" }
+        "shape": { "field": "geo", "type": "geojson" },
+        "color": {
+          "field": "rain_mm",
+          "type": "quantitative",
+          "title": "Average daily rainfall (mm)",
+          "scale": { "scheme": "purples" }
+        },
+        "tooltip": [
+          { "field": "State", "title": "State" },
+          { "field": "Year", "title": "Year" },
+          { "field": "rain_mm", "title": "Average rainfall (mm)", "format": ".2f" }
+        ]
       }
     },
 
     {
-      "data": {
-        "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/ne_10m.json",
-        "format": { "type": "topojson", "feature": "ne_10m_admin_1_states_provinces" }
-      },
+      "data": { "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/rainfall_state_year_avg.csv" },
       "transform": [
+        { "filter": "toNumber(datum.Year) == toNumber(year_selection)" },
+        { "calculate": "toNumber(datum['Avg_Rainfall_mm'])", "as": "rain_mm" },
         {
-          "lookup": "properties.state",
-          "from": {
-            "data": { "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/rainfall_state_avg.csv" },
-            "key": "State",
-            "fields": ["Avg Rainfall (mm)"]
-          }
+          "aggregate": [
+            { "op": "argmax", "field": "rain_mm", "as": "row_max" },
+            { "op": "argmin", "field": "rain_mm", "as": "row_min" }
+          ]
         },
-        { "filter": "datum['Avg Rainfall (mm)'] != null" },
-        { "filter": "toNumber(datum['Avg Rainfall (mm)']) >= toNumber(MinimumRainfallThreshold)" },
-
-        { "aggregate": [{ "op": "count", "as": "nVisible" }] },
-        { "calculate": "11", "as": "totalStates" },
-        {
-          "calculate": "'Number of states with average daily rainfall \\u2265 ' + format(toNumber(MinimumRainfallThreshold), '.2f') + ' mm: ' + datum.nVisible + ' of ' + datum.totalStates + '.'",
-          "as": "countLabel"
-        }
+        { "calculate": "'Rainfall in Year ' + toString(year_selection) + ':'", "as": "line1" },
+        { "calculate": "'Region with the Highest Average Rainfall: ' + datum.row_max.State + ' (' + format(datum.row_max.rain_mm, '.2f') + ' mm)'", "as": "line2" },
+        { "calculate": "'Region with the Lowest Average Rainfall: ' + datum.row_min.State + ' (' + format(datum.row_min.rain_mm, '.2f') + ' mm)'", "as": "line3" }
       ],
-      "mark": {
-        "type": "text",
-        "fontSize": 15,
-        "fontWeight": 900,
-        "align": "right",
-        "fill": "#111"
-      },
-      "encoding": { "x": { "value": 780 }, "y": { "value": 24 }, "text": { "field": "countLabel" } }
+      "layer": [
+        {
+          "mark": { "type": "text", "fontSize": 15, "fontWeight": "bold", "align": "left" },
+          "encoding": { "x": { "value": 400 }, "y": { "value": 200 }, "text": { "field": "line1" }, "color": { "value": "black" } }
+        },
+        {
+          "mark": { "type": "text", "fontSize": 15, "fontWeight": "bold", "align": "left", "dy": 24 },
+          "encoding": { "x": { "value": 400 }, "y": { "value": 200 }, "text": { "field": "line2" }, "color": { "value": "black" } }
+        },
+        {
+          "mark": { "type": "text", "fontSize": 15, "fontWeight": "bold", "align": "left", "dy": 48 },
+          "encoding": { "x": { "value": 400 }, "y": { "value": 200 }, "text": { "field": "line3" }, "color": { "value": "black" } }
+        }
+      ]
     },
 
     {
-      "data": {
-        "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/ne_10m.json",
-        "format": { "type": "topojson", "feature": "ne_10m_admin_1_states_provinces" }
-      },
+      "data": { "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/district_centroids_peninsular_notown.csv" },
       "transform": [
+        { "filter": "datum.States != 'WP'" },
         {
-          "lookup": "properties.state",
-          "from": {
-            "data": { "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/rainfall_state_avg.csv" },
-            "key": "State",
-            "fields": ["Avg Rainfall (mm)"]
-          }
-        },
-        { "filter": "datum['Avg Rainfall (mm)'] != null" },
-        { "filter": "toNumber(datum['Avg Rainfall (mm)']) >= toNumber(MinimumRainfallThreshold)" },
-        { "window": [{ "op": "rank", "as": "r" }], "sort": [{ "field": "Avg Rainfall (mm)", "order": "descending" }] },
-        { "filter": "datum.r == 1" },
-        {
-          "calculate": "'Highest rainfall among shown states: ' + datum.properties.state + ' — ' + format(datum['Avg Rainfall (mm)'], '.2f') + ' mm.'",
-          "as": "maxLabel"
+          "aggregate": [
+            { "op": "mean", "field": "Longitude", "as": "lon" },
+            { "op": "mean", "field": "Latitude", "as": "lat" }
+          ],
+          "groupby": ["States"]
         }
       ],
-      "mark": { "type": "text", "fontSize": 13, "fontWeight": 900, "align": "right", "fill": "#111"},
-      "encoding": { "x": { "value": 780 }, "y": { "value": 46 }, "text": { "field": "maxLabel" } }
-    },
-
-    {
-      "data": {
-        "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/ne_10m.json",
-        "format": { "type": "topojson", "feature": "ne_10m_admin_1_states_provinces" }
-      },
-      "transform": [
-        {
-          "lookup": "properties.state",
-          "from": {
-            "data": { "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/rainfall_state_avg.csv" },
-            "key": "State",
-            "fields": ["Avg Rainfall (mm)"]
-          }
-        },
-        { "filter": "datum['Avg Rainfall (mm)'] != null" },
-        { "filter": "toNumber(datum['Avg Rainfall (mm)']) >= toNumber(MinimumRainfallThreshold)" },
-        { "window": [{ "op": "rank", "as": "r" }], "sort": [{ "field": "Avg Rainfall (mm)", "order": "ascending" }] },
-        { "filter": "datum.r == 1" },
-        {
-          "calculate": "'Lowest rainfall among shown states: ' + datum.properties.state + ' — ' + format(datum['Avg Rainfall (mm)'], '.2f') + ' mm.'",
-          "as": "minLabel"
-        }
-      ],
-      "mark": { "type": "text", "fontSize": 13, "fontWeight": 900, "align": "right", "fill": "#111" },
-      "encoding": { "x": { "value": 780 }, "y": { "value": 66 }, "text": { "field": "minLabel" } }
+      "mark": { "type": "text", "fontSize": 12, "fontWeight": "bold", "opacity": 1 },
+      "encoding": {
+        "longitude": { "field": "lon", "type": "quantitative" },
+        "latitude": { "field": "lat", "type": "quantitative" },
+        "text": { "field": "States" }
+      }
     }
-  ],
-
-  "config": { "view": { "stroke": null }, "legend": { "orient": "right" } }
+  ]
 }
