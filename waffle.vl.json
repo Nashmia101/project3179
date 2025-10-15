@@ -1,0 +1,65 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Temperature × Rainfall Year Types (2014–2020) — Waffles by State",
+  "data": { "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/climate_2014_2020.csv" },
+
+  "transform": [
+    
+    { "calculate": "toNumber(datum.MinMeanTemp_C)", "as": "temp" },
+    { "calculate": "toNumber(datum.Rainfall_mm)",   "as": "rain" },
+
+    
+    {
+      "joinaggregate": [
+        { "op": "median", "field": "MinMeanTemp_C", "as": "temp_med" },
+        { "op": "median", "field": "Rainfall_mm",   "as": "rain_med" }
+      ],
+      "groupby": ["State"]
+    },
+
+    
+    { "calculate": "datum.temp >= datum.temp_med ? 'Hot'  : 'Cool'", "as": "TempCat" },
+    { "calculate": "datum.rain >= datum.rain_med ? 'Wet'  : 'Dry'",  "as": "RainCat" },
+    { "calculate": "datum.TempCat + '–' + datum.RainCat", "as": "YearType" },
+
+    
+    { "aggregate": [{ "op": "count", "as": "years" }], "groupby": ["State","YearType"] },
+
+   
+    { "calculate": "sequence(0, datum.years)", "as": "tiles" },
+    { "flatten": ["tiles"] },
+
+   
+    { "calculate": "datum.tiles % 5", "as": "col" },
+    { "calculate": "floor(datum.tiles / 5)", "as": "row" }
+  ],
+
+  "facet": { "field": "State", "type": "nominal", "columns": 4, "title": null },
+
+  "spec": {
+    "width": 140,
+    "height": 80,
+    "mark": { "type": "rect", "stroke": "#ffffff", "strokeWidth": 1 },
+    "encoding": {
+      "x": { "field": "col", "type": "ordinal", "axis": null, "scale": {"domain": [0,1,2,3,4]} },
+      "y": { "field": "row", "type": "ordinal", "axis": null, "sort": "descending" },
+      "color": {
+        "field": "YearType",
+        "type": "nominal",
+        "title": null,
+        "scale": {
+          "domain": ["Hot–Wet","Hot–Dry","Cool–Wet","Cool–Dry"],
+          "range":  ["#0ea5e9","#f59e0b","#6366f1","#9ca3af"]
+        },
+        "legend": { "orient": "bottom", "columns": 2 }
+      },
+      "tooltip": [
+        {"field": "State"},
+        {"field": "YearType", "title": "Type"},
+        {"field": "years", "title": "Years (2014–2020)"}
+      ]
+    }
+  },
+
+  "config": { "view": { "stroke": null }, "axis": { "grid": false } }
+}
