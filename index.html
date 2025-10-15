@@ -49,7 +49,6 @@
       <div id="trendVis" class="vis" aria-label="Line chart of average daily rainfall by year for a selected state"></div>
     </section>
 
-    
     <h2>Water Production by State and Year</h2>
     <p class="desc">
       Grouped bars compare total water production across states, with an option to filter by year.
@@ -67,9 +66,32 @@
     </section>
 
     <h2>Rainfall vs Water Production — Scatter</h2>
-<section class="card">
-  <div id="scatterVis" class="vis" aria-label="Scatter plot of Rainfall vs Water Production"></div>
-</section>
+    <section class="card">
+      <div id="scatterVis" class="vis" aria-label="Scatter plot of Rainfall vs Water Production"></div>
+    </section>
+
+    <h2>Temperature vs Rainfall — Bubble Chart</h2>
+    <p class="desc">
+      X = Temperature (toggle Min/Max), Y = Rainfall (mm), bubble size = Humidity (%), color = State.
+    </p>
+    <section class="card">
+      <div id="bubbleVis" class="vis" aria-label="Bubble chart of Temperature vs Rainfall"></div>
+    </section>
+
+    
+    <h2>Humidity Composition — Donut</h2>
+    <p class="desc">
+      Nationwide share of stations by humidity band for a selected year (2014–2020).
+    </p>
+    <section class="card">
+      <div id="donutVis" class="vis" aria-label="Donut of humidity bands by station share"></div>
+    </section>
+
+    <h2>Propotional Map showing comparsion between Minimum Temp and Maximum Temp</h2>
+    <p class="desc"></p>
+    <section class="card">
+      <div id="waffleVis" class="vis" aria-label="Waffle charts of temperature × rainfall year-types by state"></div>
+    </section>
   </main>
 
   <script>
@@ -83,11 +105,17 @@
       vegaEmbed(target, spec, { actions:false, renderer:'svg' });
     }
 
-    loadAndEmbed('#mapVis',    'map.vl.json');
-    loadAndEmbed('#trendVis',  'line.vl.json');
-    loadAndEmbed('#barVis',    'barchart.vl.json');   
-    loadAndEmbed('#heatmapVis','heatmap.vl.json');
+    loadAndEmbed('#mapVis',     'map.vl.json');
+    loadAndEmbed('#trendVis',   'line.vl.json');
+    loadAndEmbed('#barVis',     'barchart.vl.json');
+    loadAndEmbed('#heatmapVis', 'heatmap.vl.json');
     loadAndEmbed('#scatterVis', 'scatter.vl.json');
+    loadAndEmbed('#bubbleVis',  'bubble.vl.json');
+
+  
+    loadAndEmbed('#donutVis',   'donut.vl.json');
+
+    loadAndEmbed('#waffleVis',  'waffle.vl.json');
   </script>
 </body>
 </html>

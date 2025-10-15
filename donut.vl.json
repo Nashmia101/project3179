@@ -4,38 +4,30 @@
   "width": 520,
   "height": 420,
   "background": "#ffffff",
+  "config": { "view": { "stroke": null }, "axis": { "grid": false, "domain": false, "ticks": false, "labels": false } },
 
   "data": {
     "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/Humid_malaysia_CLEAN_2014_2020_IMPUTED.csv",
-    "format": {"type": "csv"}
+    "format": { "type": "csv" }
   },
 
   "params": [
     {
       "name": "YearPick",
       "value": 2020,
-      "bind": {"input": "select", "name": "Year: ", "options": [2014,2015,2016,2017,2018,2019,2020]}
+      "bind": { "input": "select", "name": "Year: ", "options": [2014,2015,2016,2017,2018,2019,2020] }
     }
   ],
 
   "transform": [
-    {"filter": "toNumber(datum.Year) == toNumber(YearPick)"},
-
-    {
-      "calculate":
-        "toNumber(isValid(datum['Mean Relative Humidity']) ? datum['Mean Relative Humidity'] : (isValid(datum.Mean_Relative_Humidity) ? datum.Mean_Relative_Humidity : (isValid(datum.Humidity) ? datum.Humidity : null)))",
-      "as": "rh"
-    },
-    {
-      "calculate":
-        "isValid(datum.Station) ? datum.Station : (isValid(datum['Station Name']) ? datum['Station Name'] : (isValid(datum.Station_ID) ? datum.Station_ID : datum.State))",
-      "as": "station"
-    },
-    { "calculate": "rh >= 80 ? '≥80%' : (rh >= 75 ? '75–80%' : (rh >= 70 ? '70–75%' : '<70%'))", "as": "RH_Band" },
-
-    { "aggregate": [{ "op": "distinct", "field": "station", "as": "n" }], "groupby": ["RH_Band"] },
-    { "window": [{ "op": "sum", "field": "n", "as": "total" }] },
-    { "calculate": "n / total", "as": "pct" }
+    { "filter": "toNumber(datum.Year) == YearPick" },
+    { "calculate": "toNumber(datum['Mean relative humidity in Percentage'])", "as": "rh" },
+    { "filter": "isValid(datum.rh)" },
+    { "calculate": "datum.State + '|' + datum['Selected meteorological station ']", "as": "station_key" },
+    { "calculate": "datum.rh >= 80 ? '≥80%' : (datum.rh >= 75 ? '75–80%' : (datum.rh >= 70 ? '70–75%' : '<70%'))", "as": "RH_Band" },
+    { "aggregate": [ { "op": "distinct", "field": "station_key", "as": "n" } ], "groupby": ["RH_Band"] },
+    { "joinaggregate": [ { "op": "sum", "field": "n", "as": "total" } ] },
+    { "calculate": "datum.n / datum.total", "as": "pct" }
   ],
 
   "layer": [
@@ -48,7 +40,7 @@
           "type": "nominal",
           "title": "Humidity band",
           "sort": ["<70%", "70–75%", "75–80%", "≥80%"],
-          "scale": { "scheme": "purples" }
+          "scale": { "range": ["#e57373", "#f1c40f", "#7e57c2"] }  
         },
         "tooltip": [
           { "field": "RH_Band", "title": "Band" },
@@ -68,18 +60,21 @@
 
     {
       "transform": [
-        { "window": [{ "op": "rank", "as": "rk" }], "sort": [{ "field": "pct", "order": "descending" }] },
+        { "window": [ { "op": "rank", "as": "rk" } ], "sort": [ { "field": "pct", "order": "descending" } ] },
         { "filter": "datum.rk == 1" },
-        {
-          "calculate":
-            "datum.RH_Band + ' band is ' + format(datum.pct, '.0%') + ' of all stations in ' + toString(YearPick)",
-          "as": "center_note"
-        }
+        { "calculate": "datum.RH_Band + ' band is ' + format(datum.pct, '.0%') + ' of all stations in ' + toString(YearPick)", "as": "center_note" }
       ],
-      "mark": { "type": "text", "align": "center", "baseline": "middle", "fontSize": 16, "fontWeight": "bold", "fill": "#0f766e" },
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "middle",
+        "fontSize": 18,
+        "fontWeight": "bold",
+        "fill": "#0f766e"
+      },
       "encoding": {
-        "x": { "aggregate": "mean", "field": "n", "type": "quantitative" },
-        "y": { "aggregate": "mean", "field": "n", "type": "quantitative" },
+        "x": { "value":  700 },  
+        "y": { "value": 85 },   
         "text": { "field": "center_note" }
       }
     }

@@ -1,0 +1,82 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Rainfall vs Temperature vs Humidity — Indexed Lines (0–1)",
+  "width": 900,
+  "height": 420,
+
+  "data": {
+    "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/state_year_climate_production_WITH_HUMIDITY_CLEAN.csv",
+    "format": {"type": "csv"}
+  },
+
+  "params": [
+    {
+      "name": "StatePick",
+      "value": "Selangor",
+      "bind": {
+        "input": "select",
+        "name": "State: ",
+        "options": ["Johor","Kedah","Kelantan","Melaka","Pahang","Penang","Perak","Perlis","Selangor","Selangor-Wilayah","Terengganu"]
+      }
+    }
+  ],
+
+  "transform": [
+    { "filter": "datum.State == StatePick" },
+    { "calculate": "toNumber(datum.Year)", "as": "Year_num" },
+    { "calculate": "toNumber(datum.Avg_Rainfall_mm)", "as": "Rain_mm" },
+    { "calculate": "toNumber(datum.MinMeanTemp_C)", "as": "Temp_c" },
+    { "calculate": "toNumber(datum.Humidity)", "as": "Hum_pct" },
+
+    { "fold": ["Rain_mm","Temp_c","Hum_pct"], "as": ["Metric", "Value"] },
+
+    {
+      "calculate": "datum.Metric === 'Rain_mm' ? 'Rainfall (mm)' : datum.Metric === 'Temp_c' ? 'Temperature (°C)' : 'Humidity (%)'",
+      "as": "Series"
+    },
+
+    {
+      "window": [
+        {"op": "min", "field": "Value", "as": "vmin"},
+        {"op": "max", "field": "Value", "as": "vmax"}
+      ],
+      "frame": [null, null],
+      "groupby": ["Series"]
+    },
+    { "calculate": "(datum.Value - datum.vmin) / (datum.vmax - datum.vmin)", "as": "Index01" }
+  ],
+
+  "layer": [
+    {
+      "mark": {"type": "line", "point": true},
+      "encoding": {
+        "x": {
+          "field": "Year_num", "type": "quantitative",
+          "title": "Year",
+          "axis": { "tickCount": 7, "format": "d" }
+        },
+        "y": {
+          "field": "Index01", "type": "quantitative",
+          "title": "Relative level (0–1, min–max per series)"
+        },
+        "color": { "field": "Series", "type": "nominal", "title": null },
+        "tooltip": [
+          { "field": "State", "title": "State" },
+          { "field": "Year_num", "title": "Year", "format": "d" },
+          { "field": "Series", "title": "Series" },
+          { "field": "Value", "title": "Raw value", "format": ".2f" },
+          { "field": "Index01", "title": "Scaled (0–1)", "format": ".2f" }
+        ]
+      }
+    },
+    {
+      "mark": {"type": "rule", "strokeDash": [4,4], "opacity": 0.35},
+      "encoding": { "y": { "datum": 0.5 } }
+    }
+  ],
+
+  "config": {
+    "view": {"stroke": null},
+    "axis": {"grid": true}
+  }
+}
