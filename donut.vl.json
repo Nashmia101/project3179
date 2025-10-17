@@ -17,7 +17,6 @@
 
   "vconcat": [
     {
-      
       "width": 420,
       "height": 340,
 
@@ -47,7 +46,7 @@
               "type": "nominal",
               "title": "Humidity band",
               "sort": ["<70%", "70–75%", "75–80%", "≥80%"],
-              "scale": { "range": ["#e57373", "#f1c40f", "#7e57c2"] },
+              "scale": { "range": ["#9467bd", "#1f77b4", "#2ca02c"] },
               "legend": { "orient": "none", "legendX": 370, "legendY": 24, "labelFontSize": 16, "titleFontSize": 18 }
             },
             "tooltip": [
@@ -131,7 +130,7 @@
                   "field": "RH_Band",
                   "type": "nominal",
                   "sort": ["<70%","70–75%","75–80%","≥80%"],
-                  "scale": { "range": ["#e57373","#f1c40f","#7e57c2"] },
+                  "scale": { "range": ["#9467bd", "#1f77b4", "#2ca02c"] },
                   "legend": null
                 },
                 "tooltip": [

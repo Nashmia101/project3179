@@ -59,7 +59,7 @@
           "field": "Index01", "type": "quantitative",
           "title": "Relative level (0–1, min–max per series)"
         },
-        "color": { "field": "Series", "type": "nominal", "title": null },
+        "color": { "field": "Series", "type": "nominal", "title": null ,"scale": { "range": ["#9467bd", "#1f77b4", "#2ca02c"] } },
         "tooltip": [
           { "field": "State", "title": "State" },
           { "field": "Year_num", "title": "Year", "format": "d" },
