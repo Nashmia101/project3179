@@ -1,10 +1,10 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Monthly Average Daily Rainfall — Small Multiples by State",
+  
 
   "padding": { "top": 16, "right": 8, "bottom": 28, "left": 6 },   
 
-  "columns": 4,
+  "columns": 3,
 
   "params": [
     {
@@ -35,7 +35,7 @@
   },
 
   "spec": {
-    "width": 240,
+    "width": 220,
     "height": 140,
     "layer": [
       {

@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Rainfall vs Temperature vs Humidity — Indexed Lines (0–1)",
+  
   "width": 900,
   "height": 420,
 
@@ -16,7 +16,7 @@
       "bind": {
         "input": "select",
         "name": "State: ",
-        "options": ["Johor","Kedah","Kelantan","Melaka","Pahang","Penang","Perak","Perlis","Selangor","Selangor-Wilayah","Terengganu"]
+        "options": ["Johor","Kedah","Kelantan","Melaka","Pahang","Penang","Perak","Perlis","Selangor","Terengganu"]
       }
     }
   ],

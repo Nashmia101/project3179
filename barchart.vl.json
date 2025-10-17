@@ -1,24 +1,23 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Water Production by State and Year",
-  "background": "#f3f4f6",
+  "background": "#ffffff",
 
   "height": 500,
-  "padding": {"left": 60, "right": 24, "top": 10, "bottom": 70},
+  "padding": { "left": 60, "right": 24, "top": 10, "bottom": 70 },
 
   "data": {
     "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/water_production_aligned_to_rainfall_2014_2020.csv",
-    "format": {"type": "csv"}
+    "format": { "type": "csv" }
   },
 
   "params": [
     {
       "name": "YearPick",
-      "value": "All",
+      "value": 2020,
       "bind": {
         "input": "select",
         "name": "Year: ",
-        "options": ["All", 2014, 2015, 2016, 2017, 2018, 2019, 2020]
+        "options": [2014, 2015, 2016, 2017, 2018, 2019, 2020]
       }
     }
   ],
@@ -27,46 +26,75 @@
     { "filter": "YearPick === 'All' || toNumber(datum.Year) === toNumber(YearPick)" }
   ],
 
-  "mark": { "type": "bar", "cornerRadiusEnd": 2 },
-
-  "encoding": {
-    "x": {
-      "field": "State",
-      "type": "nominal",
-      "axis": { "title": "State", "labelAngle": -30, "labelFontSize": 12, "titleFontSize": 13 },
-      "scale": {"paddingInner": 0.2}
-    },
-
-    "xOffset": { "field": "Year", "type": "ordinal" },
-    "order":   { "field": "Year", "type": "ordinal" },
-
-    "y": {
-      "aggregate": "sum",
-      "field": "Water_Production",
-      "type": "quantitative",
-      "title": "Water Production",
-      "scale": { "domain": [0, 4500] },
-      "axis": {
-        "values": [500,1000,1500,2000,2500,3000,3500,4000,4500],
-        "format": ",.0f",
-        "grid": true,
-        "labelFontSize": 12,
-        "titleFontSize": 13
+  "layer": [
+    {
+      "mark": { "type": "bar", "cornerRadiusEnd": 2 },
+      "encoding": {
+        "x": {
+          "field": "State",
+          "type": "nominal",
+          "axis": { "title": "State", "labelAngle": -30, "labelFontSize": 12, "titleFontSize": 13 },
+          "scale": { "paddingInner": 0.2 }
+        },
+        "xOffset": { "field": "Year", "type": "ordinal" },
+        "order": { "field": "Year", "type": "ordinal" },
+        "y": {
+          "aggregate": "sum",
+          "field": "Water_Production",
+          "type": "quantitative",
+          "title": "Water Production",
+          "scale": { "domain": [0, 4500] },
+          "axis": {
+            "values": [500,1000,1500,2000,2500,3000,3500,4000,4500],
+            "format": ",.0f",
+            "grid": true,
+            "labelFontSize": 12,
+            "titleFontSize": 13
+          }
+        },
+        "color": {
+          "field": "State",
+          "type": "nominal",
+          "legend": { "title": "State" }
+        },
+        "tooltip": [
+          { "field": "State", "type": "nominal" },
+          { "field": "Year", "type": "ordinal", "title": "Year" },
+          { "aggregate": "sum", "field": "Water_Production", "type": "quantitative", "title": "Water Production", "format": ",.0f" }
+        ]
       }
     },
 
-    "color": {
-      "field": "State",
-      "type": "nominal",
-      "legend": { "title": "State" }
+    {
+      "transform": [
+        { "aggregate": [{ "op": "sum", "field": "Water_Production", "as": "WP" }], "groupby": ["State", "Year"] },
+        { "window": [{ "op": "rank", "as": "r_desc" }], "sort": [{ "field": "WP", "order": "descending" }] },
+        { "filter": "datum.r_desc == 1" },
+        { "calculate": "'Highest Water Production: ' + datum.State + ' — ' + format(datum.WP, ',.0f') + ' (' + datum.Year + ')'", "as": "ann_high" }
+      ],
+      "mark": { "type": "text", "fontSize": 13, "fontWeight": "bold", "align": "left", "fill": "#111827" },
+      "encoding": {
+        "x": { "value": 10 },
+        "y": { "value": 24 },
+        "text": { "field": "ann_high", "type": "nominal" }
+      }
     },
 
-    "tooltip": [
-      { "field": "State", "type": "nominal" },
-      { "field": "Year", "type": "ordinal", "title": "Year" },
-      { "aggregate": "sum", "field": "Water_Production", "type": "quantitative", "title": "Water Production", "format": ",.0f" }
-    ]
-  },
+    {
+      "transform": [
+        { "aggregate": [{ "op": "sum", "field": "Water_Production", "as": "WP" }], "groupby": ["State", "Year"] },
+        { "window": [{ "op": "rank", "as": "r_asc" }], "sort": [{ "field": "WP", "order": "ascending" }] },
+        { "filter": "datum.r_asc == 1" },
+        { "calculate": "'Lowest Water Production: ' + datum.State + ' — ' + format(datum.WP, ',.0f') + ' (' + datum.Year + ')'", "as": "ann_low" }
+      ],
+      "mark": { "type": "text", "fontSize": 13, "fontWeight": "bold","align": "left", "fill": "#111827" },
+      "encoding": {
+        "x": { "value": 10 },
+        "y": { "value": 44 },
+        "text": { "field": "ann_low", "type": "nominal" }
+      }
+    }
+  ],
 
   "config": { "view": { "stroke": null } }
 }

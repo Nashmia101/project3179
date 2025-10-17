@@ -2,7 +2,7 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "width": 1200,
   "height": 500,
-  "projection": {"type": "mercator"},
+  "projection": { "type": "mercator", "center": [103.25, 4.2], "scale": 4300, "translate": [400, 250] },
   "config": {"view": {"stroke": "transparent"}},
 
   "params": [
@@ -20,7 +20,7 @@
 
   "layer": [
     {
-      "data": { "graticule": { "extent": [[99, 0], [120, 8]], "step": [1, 1] } },
+      "data": { "graticule": { "extent": [[99, 0], [106, 8]], "step": [1, 1] } },
       "mark": { "type": "geoshape", "fill": null, "stroke": "lightgrey", "strokeWidth": 0.5 }
     },
 
@@ -57,7 +57,18 @@
           "field": "rain_mm",
           "type": "quantitative",
           "title": "Average daily rainfall (mm)",
-          "scale": { "scheme": "purples" }
+          "scale": { "scheme": "tealblues" },
+         "legend": {
+  "orient": "none",         
+  "direction": "horizontal",
+  "legendX": 600,           
+  "legendY": 220,           
+  "gradientLength": 200,
+  "gradientThickness": 12,
+  "title": "Average daily rainfall (mm)",
+  "padding": 4
+ 
+}
         },
         "tooltip": [
           { "field": "State", "title": "State" },
@@ -85,15 +96,15 @@
       "layer": [
         {
           "mark": { "type": "text", "fontSize": 15, "fontWeight": "bold", "align": "left" },
-          "encoding": { "x": { "value": 400 }, "y": { "value": 200 }, "text": { "field": "line1" }, "color": { "value": "black" } }
+          "encoding": { "x": { "value": 370 }, "y": { "value": 30 }, "text": { "field": "line1" }, "color": { "value": "black" } }
         },
         {
           "mark": { "type": "text", "fontSize": 15, "fontWeight": "bold", "align": "left", "dy": 24 },
-          "encoding": { "x": { "value": 400 }, "y": { "value": 200 }, "text": { "field": "line2" }, "color": { "value": "black" } }
+          "encoding": { "x": { "value": 370 }, "y": { "value": 30 }, "text": { "field": "line2" }, "color": { "value": "black" } }
         },
         {
           "mark": { "type": "text", "fontSize": 15, "fontWeight": "bold", "align": "left", "dy": 48 },
-          "encoding": { "x": { "value": 400 }, "y": { "value": 200 }, "text": { "field": "line3" }, "color": { "value": "black" } }
+          "encoding": { "x": { "value": 370 }, "y": { "value": 30 }, "text": { "field": "line3" }, "color": { "value": "black" } }
         }
       ]
     },

@@ -1,6 +1,5 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "State Temperature — Lollipop (vertical, select year & metric)",
   "width": 980,
   "height": 540,
   "config": { "view": { "stroke": null }, "axis": { "grid": true } },
@@ -23,7 +22,7 @@
     {"calculate":"toNumber(datum.MinTemp_C)","as":"min_c"},
     {"calculate":"toNumber(datum.MaxTemp_C)","as":"max_c"},
     {"calculate":"metric_selection == 'Min Temp' ? datum.min_c : datum.max_c","as":"value"},
-    {"calculate":"metric_selection == 'Min Temp' ? 20 : 30","as":"baseline"}
+    {"calculate":"metric_selection == 'Min Temp' ? 19 : 27","as":"baseline"}
   ],
 
   "layer": [
@@ -37,7 +36,7 @@
         },
         "y": {
           "field": "baseline", "type": "quantitative",
-          "scale": { "domain": { "expr": "metric_selection == 'Min Temp' ? [20, 26] : [30, 33.5]" }, "nice": false }
+          "scale": { "domain": { "expr": "metric_selection == 'Min Temp' ? [19, 26] : [27, 34]" }, "nice": false }
         },
         "y2": { "field": "value" },
         "color": { "field": "State", "type": "nominal", "legend": null, "scale": { "scheme": "tableau20" } }
@@ -54,10 +53,10 @@
         },
         "y": {
           "field": "value", "type": "quantitative",
-          "scale": { "domain": { "expr": "metric_selection == 'Min Temp' ? [20, 26] : [30, 33.5]" }, "nice": false },
+          "scale": { "domain": { "expr": "metric_selection == 'Min Temp' ? [19, 26] : [27, 34]" }, "nice": false },
           "axis": {
             "title": "Temperature (°C)",
-            "values": { "expr": "sequence(metric_selection=='Min Temp'?20:30,(metric_selection=='Min Temp'?26:33.5)+0.0001,1)" },
+            "values": { "expr": "sequence(metric_selection=='Min Temp'?19:27,(metric_selection=='Min Temp'?26:34)+0.0001,1)" },
             "tickMinStep": 1
           }
         },
@@ -73,9 +72,36 @@
         "x": { "field": "State", "type": "ordinal", "sort": {"field":"value","order":"descending"} },
         "y": {
           "field": "value", "type": "quantitative",
-          "scale": { "domain": { "expr": "metric_selection == 'Min Temp' ? [20, 26] : [30, 33.5]" }, "nice": false }
+          "scale": { "domain": { "expr": "metric_selection == 'Min Temp' ? [19, 26] : [27, 34]" }, "nice": false }
         },
         "text": { "field": "value", "type": "quantitative", "format": ".2f" }
+      }
+    },
+
+    {
+      "transform": [
+        { "window": [{"op":"rank","as":"r_desc"}], "sort": [{"field":"value","order":"descending"}] },
+        { "filter": "datum.r_desc == 1" },
+        { "calculate": "'Highest ' + metric_selection + ': ' + datum.State + ' — ' + format(datum.value, '.2f') + '°C (' + year_selection + ')'", "as": "ann_high" }
+      ],
+      "mark": { "type": "text", "fontSize": 13,  "fontWeight":"bold", "align": "right", "fill": "#111827" },
+      "encoding": {
+        "x": { "value": 750 },
+        "y": { "value": 24 },
+        "text": { "field": "ann_high", "type": "nominal" }
+      }
+    },
+    {
+      "transform": [
+        { "window": [{"op":"rank","as":"r_asc"}], "sort": [{"field":"value","order":"ascending"}] },
+        { "filter": "datum.r_asc == 1" },
+        { "calculate": "'Lowest ' + metric_selection + ': ' + datum.State + ' — ' + format(datum.value, '.2f') + '°C (' + year_selection + ')'", "as": "ann_low" }
+      ],
+      "mark": { "type": "text", "fontSize": 13, "fontWeight":"bold", "align": "right", "fill": "#111827" },
+      "encoding": {
+        "x": { "value": 750 },
+        "y": { "value": 44 },
+        "text": { "field": "ann_low", "type": "nominal" }
       }
     }
   ]

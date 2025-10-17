@@ -1,7 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Rainfall vs Water Production (select a Year)",
-  "background": "#f3f4f6",
+ 
+  "background": "#ffffff",
   "height": 480,
   "padding": { "left": 60, "right": 24, "top": 10, "bottom": 50 },
 
@@ -45,68 +45,48 @@
     { "transform": [ { "regression": "Prod", "on": "Rain" } ],
       "mark": { "type": "line", "strokeDash": [6,4], "strokeWidth": 2, "color": "#6b7280" } },
 
+   
     {
       "transform": [
         { "window": [ { "op": "rank", "as": "r" } ], "sort": [ { "field": "Prod", "order": "descending" } ] },
         { "filter": "datum.r == 1" },
         { "calculate": "'Highest production: ' + datum.State + ' (' + format(datum.Prod, ',.0f') + ')'", "as": "label" }
       ],
-      "layer": [
-        { "mark": { "type": "point", "filled": true, "size": 220, "color": "#111827" } },
-        { "mark": { "type": "text", "dy": 12, "fontSize": 12, "fontWeight": "bold", "color": "#111827", "baseline": "top", "clip": true },
-          "encoding": { "text": { "field": "label" } } }
-      ]
+      "mark": { "type": "text", "fontSize": 12, "fontWeight": "bold", "fill": "#111827", "align": "right" },
+      "encoding": { "x": { "value": 620 }, "y": { "value": 24 }, "text": { "field": "label" } }
     },
-
-   
     {
       "transform": [
         { "window": [ { "op": "rank", "as": "r" } ], "sort": [ { "field": "Rain", "order": "descending" } ] },
         { "filter": "datum.r == 1" },
         { "calculate": "'Highest rainfall: ' + datum.State + ' (' + format(datum.Rain, ',.2f') + ' mm)'", "as": "label" }
       ],
-      "layer": [
-        { "mark": { "type": "point", "filled": true, "size": 220, "color": "#0ea5e9" } },
-        { "mark": { "type": "text", "dx": -8, "dy": -36, "fontSize": 12, "fontWeight": "bold",
-                    "color": "#0ea5e9", "align": "right", "baseline": "bottom", "clip": true },
-          "encoding": { "text": { "field": "label" } } }
-      ]
+      "mark": { "type": "text", "fontSize": 12, "fontWeight": "bold", "fill": "#111827", "align": "right" },
+      "encoding": { "x": { "value": 620 }, "y": { "value": 44 }, "text": { "field": "label" } }
     },
-
     {
       "transform": [
         { "filter": "datum.rankProd == 1 && datum.rankRain == 1" },
         { "calculate": "'Lowest rainfall & production: ' + datum.State + ' (' + format(datum.Rain, ',.2f') + ' mm, ' + format(datum.Prod, ',.0f') + ')'", "as": "label" }
       ],
-      "layer": [
-        { "mark": { "type": "point", "filled": true, "size": 240, "color": "#f97316" } },
-        { "mark": { "type": "text", "dx": 10, "dy": -14, "fontSize": 12, "fontWeight": "bold", "color": "#f97316", "align": "left", "clip": true },
-          "encoding": { "text": { "field": "label" } } }
-      ]
+      "mark": { "type": "text", "fontSize": 12,"fontWeight": "bold", "fill": "#111827", "align": "right" },
+      "encoding": { "x": { "value": 620 }, "y": { "value": 64 }, "text": { "field": "label" } }
     },
-
     {
       "transform": [
         { "filter": "datum.rankProd == 1 && datum.rankRain != 1" },
         { "calculate": "'Lowest production: ' + datum.State + ' (' + format(datum.Prod, ',.0f') + ')'", "as": "label" }
       ],
-      "layer": [
-        { "mark": { "type": "point", "filled": true, "size": 220, "color": "#ef4444" } },
-        { "mark": { "type": "text", "dx": 8, "dy": -10, "fontSize": 12, "fontWeight": "bold", "color": "#ef4444", "clip": true },
-          "encoding": { "text": { "field": "label" } } }
-      ]
+      "mark": { "type": "text", "fontSize": 12, "fontWeight": "bold","fill": "#111827", "align": "right" },
+      "encoding": { "x": { "value": 620 }, "y": { "value": 84 }, "text": { "field": "label" } }
     },
-
     {
       "transform": [
         { "filter": "datum.rankRain == 1 && datum.rankProd != 1" },
         { "calculate": "'Lowest rainfall: ' + datum.State + ' (' + format(datum.Rain, ',.2f') + ' mm)'", "as": "label" }
       ],
-      "layer": [
-        { "mark": { "type": "point", "filled": true, "size": 220, "color": "#f59e0b" } },
-        { "mark": { "type": "text", "dx": 8, "dy": 14, "fontSize": 12, "fontWeight": "bold", "color": "#f59e0b", "clip": true },
-          "encoding": { "text": { "field": "label" } } }
-      ]
+      "mark": { "type": "text", "fontSize": 12, "fontWeight": "bold","fill": "#111827", "align": "right" },
+      "encoding": { "x": { "value": 620 }, "y": { "value": 104 }, "text": { "field": "label" } }
     }
   ],
 

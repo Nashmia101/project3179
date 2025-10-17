@@ -9,7 +9,7 @@
       }
     }
   },
-  "title": "Daily Rainfall — Calendar Heatmap",
+  
   "config": {
     "view": { "stroke": null },
     "background": "#f3f4f6"
@@ -48,8 +48,8 @@
       }
     },
     "spec": {
-      "width": 90,
-      "height": 90,
+      "width": 70,
+      "height": 70,
       "layer": [
         {
           "mark": { "type": "rect", "cornerRadius": 3, "stroke": null },
@@ -97,7 +97,7 @@
               "scale": {
                 "type": "threshold",
                 "domain": [0.01, 0.1, 0.25, 0.5, 1, 2, 3, 5, 7, 10, 15, 20, 25, 30, 35, 40, 45, 50],
-                "scheme": { "name": "purples", "count": 19 }
+                "scheme": { "name": "tealblues", "count": 19 }
               },
               "legend": { "title": "Rainfall (mm)" }
             },
