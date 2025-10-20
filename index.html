@@ -2,106 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Average Daily Rainfall in Peninsular Malaysia</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rainfall · Water · Temperature · Humidity — Peninsular Malaysia</title>
+
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
-  <style>
-    :root{--text:#0f172a;--muted:#475569;--panel:#fff;--outline:#cbd3df;--shadow:0 2px 6px rgba(15,23,42,.06),0 10px 24px rgba(15,23,42,.08)}
 
-    /* HERO — centered */
-    .hero{
-      background:#0f1b2a;
-      color:#fff;
-      padding:52px 18px 48px;
-      box-shadow:var(--shadow);
-      border-bottom:2px solid #1f2b3c;
-    }
-    .hero__inner{
-      max-width:1280px;
-      margin:0 auto;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      text-align:center;
-      gap:12px;
-    }
-    .hero__title{
-      margin:0;
-      line-height:1.12;
-      letter-spacing:.4px;
-      font-weight:900;
-      font-size:clamp(28px,4.2vw,56px);
-    }
-    .hero__tag{
-      margin:0;
-      opacity:.9;
-      font-size:clamp(14px,2.2vw,18px);
-    }
-
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-    .wrap{max-width:1280px;margin:22px auto 36px;padding:0 18px}
-    .card{background:var(--panel);border:2px solid var(--outline);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:28px}
-    .card-header{display:flex;align-items:center;justify-content:center;padding:16px 20px;border-bottom:2px solid var(--outline)}
-    .card-header h1{margin:0;font-size:clamp(26px,3.6vw,44px);font-weight:900;letter-spacing:.5px;text-align:center}
-    .card-body{display:grid;grid-template-columns:minmax(0,1fr) 2px 360px;align-items:stretch;min-height:560px}
-    .card-body.line{grid-template-columns:minmax(0,1fr) 360px}
-    .card-body.stack{display:block;min-height:auto}
-    .left{padding:16px;min-width:0}
-    .divider{background:var(--outline)}
-    .card-body.line .left{grid-column:1}
-    .card-body.line .right{grid-column:2;border-left:2px solid var(--outline);padding:20px}
-    .card-body.line .divider{display:none}
-    .right{padding:20px}
-    .under{padding:18px 20px;border-top:2px solid var(--outline)}
-    #mapVis,#lineVis,#heatmapVis,#lollipopVis,#donutVis,#barVis,#scatterVis,#bubbleVis{width:100%;min-height:520px}
-    .muted{color:var(--muted)}
-    @media (max-width:980px){
-      .card-body,.card-body.line{grid-template-columns:1fr}
-      .divider{display:none}
-      .right{border-top:2px solid var(--outline)}
-      .card-body.line .right{border-left:none}
-    }
-    .vega-embed,.vega-embed>div{width:100%!important;max-width:100%!important}
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <!-- Centered HERO -->
   <header class="hero">
     <div class="hero__inner">
       <h1 class="hero__title">
         Rainfall Patterns alongside Water Production, Temperature &amp; Humidity Trends in Peninsular Malaysia (2014–2020)
       </h1>
       <p class="hero__tag">
-        Interactive dashboards exploring how rainfall relates to production, temperature, and humidity across Peninsular Malaysia.
+        Dashboard exploring how rainfall relates to production, temperature, and humidity across Peninsular Malaysia.
       </p>
     </div>
   </header>
 
   <main class="wrap">
     <section class="card">
-      <div class="card-header">
-        <h1>Average Daily Rainfall in Peninsular Malaysia </h1>
-      </div>
+      <div class="card-header"><h1>Average Daily Rainfall in Peninsular Malaysia</h1></div>
       <div class="card-body">
         <div class="left"><div id="mapVis" aria-label="Choropleth map"></div></div>
         <div class="divider" aria-hidden="true"></div>
         <aside class="right" aria-label="Description panel">
-         <p style="font-weight:800;margin:0 0 8px">Average Rainfall trends in Peninsular Malaysia </p>
-          <p class="muted" style="margin:0">Peninsular Malaysia is rainy, but not evenly so.
-The east coast gets the most rain each year.
-Terengganu is often highest, around  4 –5 mm a day.
-Perlis is usually lowest, near 1 mm a day.
-Most other states sit between 2–3 mm a day.
-This follows the late-year Northeast Monsoon.</p>
-<p class="muted" style="1em 0 0">Use the Year menu to filter the year.
-Darker teal Blue means more average daily rain.
-Hover a state to see the exact value.
-Use this to spot wet and dry zones.</p>
-
+          <p class="lead">Average Rainfall trends in Peninsular Malaysia</p>
+          <p class="muted">Peninsular Malaysia is rainy, but not evenly so.
+          The east coast gets the most rain each year.
+          Terengganu is often highest, around 4–5&nbsp;mm a day.
+          Perlis is usually lowest, near 1&nbsp;mm a day.
+          Most other states sit between 2–3&nbsp;mm a day.
+          This follows the late-year Northeast Monsoon.</p>
         </aside>
       </div>
     </section>
@@ -111,26 +47,8 @@ Use this to spot wet and dry zones.</p>
       <div class="card-body line">
         <div class="left"><div id="lineVis" aria-label="Monthly Rainfall Trends Across Peninsular Malaysia (2014–2020)"></div></div>
         <aside class="right" aria-label="Description panel">
-          <p style="font-weight:800;margin:0 0 8px">Rainfall patterns across months</p>
-          <p class="muted" style="margin:0">Rainfall patterns in Peninsular Malaysia show clear seasonal shifts.
-These shifts appear across all states.
-Most regions are drier from February to August.
-Rain rises sharply from October to December.
-This period marks the Northeast Monsoon.
-East coast states record the highest peaks.
-Kelantan and Terengganu peak in November and December.
-Values often exceed 10–20 mm per day.
-Pahang climbs late and stays high.
-Western states remain much drier most months.
-Perlis, Penang, and Melaka rise only moderately.
-Increases occur mainly during monsoon months.
-Central and southern states are more balanced.
-Selangor, Negeri Sembilan, and Johor rise year-end.
-Overall, monsoon winds drive Malaysia’s rainfall cycle.
-Wet and dry phases repeat each year.
-<p class="muted" style="1em 0 0">Use the Year dropdown in the chart to switch years. 
-Each panel shows monthly average daily rainfall (mm). 
-Hover points to see values.</p>
+          <p class="lead">Rainfall patterns across months</p>
+          <p class="muted">Rainfall in Peninsular Malaysia follows a clear seasonal cycle, with low rainfall from February to August and a sharp rise from October to December during the Northeast Monsoon. The east coast, especially Kelantan, Terengganu, and Pahang, receives the heaviest rain, often exceeding 10–20&nbsp;mm per day. Western states like Perlis, Penang, and Melaka stay drier, while Selangor, Negeri Sembilan, and Johor see moderate year-end increases. The monsoon remains the main driver of Malaysia’s recurring wet and dry seasons.</p>
         </aside>
         <div class="divider" aria-hidden="true"></div>
       </div>
@@ -141,17 +59,17 @@ Hover points to see values.</p>
       <div class="card-body stack">
         <div class="left" style="padding:18px 18px 6px"><div id="heatmapVis" aria-label="Calendar heatmap"></div></div>
         <aside class="under" aria-label="Description panel">
-          <p style="font-weight:800;margin:0 0 8px">Daily Rainfall Patterns</p>
-          <p class="muted" style="margin:0">The daily rainfall calendar shows how rain varies each day across Peninsular Malaysia from 2014 to 2020.
-Each square represents one day, where darker colors mean heavier rainfall.
-Across all states, rainfall tends to be light and scattered between February and August, with several dry spells lasting multiple days.
-From October to December, darker clusters become frequent, showing intense and continuous rainfall as the Northeast Monsoon arrives</p>
-<p class="muted" style="1em 0 0">Eastern states like Terengganu, Pahang, and Kelantan experience the heaviest daily rainfall, often recording several consecutive days with over 40–50 mm of rain.
-Western states such as Perlis, Penang, and Selangor show fewer dark days, indicating lighter and less frequent rain.
-Rain events in these regions appear shorter, with brief but sharp downpours rather than long rainy stretches.</p>
-<p class="muted" style="1em 0 0">Central and southern regions, including Johor and Negeri Sembilan, display moderate rainfall throughout the year but still turn darker towards year-end.
-This pattern highlights how monsoon systems dominate Peninsular Malaysia’s rainfall rhythm  creating clear, recurring wet and dry seasons with distinct daily rainfall intensity patterns across different regions.</p>
-<p class="muted" style="1em 0 0">Filter can be used to filter out states and observe daily rainfall across the year for a specific state</p>
+          <p class="lead">Daily Rainfall Patterns</p>
+          <p class="muted">
+            From 2014 to 2020, most states have many dry days
+            from February to August, then many wet days from October
+            to December during the Northeast Monsoon. The east coast Terengganu,
+            Pahang, and Kelantan records the most very wet days, often
+            above 40 to 50 millimeters on several consecutive days.
+            Western states such as Perlis, Penang, and Selangor have
+            fewer very wet days. Johor and Negeri Sembilan show
+            a moderate increase in wet days toward year end.
+          </p>
         </aside>
       </div>
     </section>
@@ -162,15 +80,10 @@ This pattern highlights how monsoon systems dominate Peninsular Malaysia’s rai
         <div class="left"><div id="lollipopVis" aria-label="State temperature lollipop chart"></div></div>
         <div class="divider" aria-hidden="true"></div>
         <aside class="right" aria-label="Description panel">
-          <p style="font-weight:800;margin:0 0 8px">Mean Minimum and Maximum Temperature across states.</p>
-          <p class="muted" style="margin:0">This visualization shows the mean minimum and mean maximum temperatures for each state in Peninsular Malaysia from 2016 to 2020, and it connects closely with rainfall.
-Perlis, Selangor, and Perak record the highest mean maximum temperatures, around 33 to 34 degrees Celsius. These states also have less rainfall and clearer skies, which makes their days hotter.
-Pahang and Terengganu show lower mean maximums, close to 31 degrees Celsius. These states receive heavy rain during the Northeast Monsoon, and the clouds block sunlight, keeping days cooler.
-For mean minimum temperatures, Selangor, Penang, and Melaka stay warmer at night, above 24 degrees Celsius, because of drier conditions and urban heat. Pahang records the lowest mean minimum, around 21 degrees Celsius, as rain and higher elevation cool the nights faster.</p>
-<p class="muted" style="1em 0 0">For mean minimum temperatures, Selangor, Penang, and Melaka stay warmer at night, above 24 degrees Celsius, because of drier conditions and urban heat. Pahang records the lowest mean minimum, around 21 degrees Celsius, as rain and higher elevation cool the nights faster.</p>
-<p class="muted" style="1em 0 0">Across the five years, both mean minimum and mean maximum temperatures stay mostly stable, with a small rise in some states. This means nights are slowly getting warmer while days remain steady.
-Overall, where rainfall is higher, temperatures stay lower. Where rainfall is lower, days are hotter and nights are warmer.</p>
-<p class="muted" style="1em 0 0">Filter can be used to see maximum and minimum temperatures separately with an additional filter for year </p>
+          <p class="lead">Mean Minimum and Maximum Temperature across states.</p>
+          <p class="muted">From 2014 to 2020, Perlis, Selangor, and Perak record the highest maximum temperatures around 33–34&nbsp;°C, while Pahang and Terengganu remain cooler at 30–31&nbsp;°C because of heavier rainfall and cloud cover.</p>
+          <p class="muted" style="margin:1em 0 0">For minimum temperatures, Selangor-Wilayah, Penang, and Melaka stay warmer at night (24–25&nbsp;°C) due to drier conditions and urban heat, while Pahang is the coolest (19–22&nbsp;°C) from rain and elevation.</p>
+          <p class="muted" style="margin:1em 0 0">Overall, temperatures stay steady with slightly warmer nights, showing that higher rainfall keeps states cooler.</p>
         </aside>
       </div>
     </section>
@@ -181,14 +94,9 @@ Overall, where rainfall is higher, temperatures stay lower. Where rainfall is lo
         <div class="left"><div id="donutVis" aria-label="Humidity donut and station waffle chart"></div></div>
         <div class="divider" aria-hidden="true"></div>
         <aside class="right" aria-label="Description panel">
-          <p style="font-weight:800;margin:0 0 8px">Variations in Humidity across Peninsular Malaysia</p>
-           <p class="muted" style="margin:0">Most stations sit in very humid air most years, with about six to eight out of ten stations reaching at least 80 percent humidity, peaking around 2017 and easing a bit in 2019 and 2020. Highlands and the east coast stay in the very humid group almost all the time, while a few urban and coastal west coast sites slide into the 75 to 80 percent band on some years</p>
-<p class="muted" style="1em 0 0">This pattern matches the daily rainfall calendars. When many stations are at or above 80 percent, the calendars show more wet days, especially in November to January on the east coast during the northeast monsoon, and again in the inter monsoon months like October and May. When the share above 80 percent falls, there are more dry spells and rain becomes spikier, although short heavy storms can still occur.</p>
-<p class="muted" style="1em 0 0">In short, more stations in the top humidity band usually means more frequent rain days, strongest on the east coast and highlands, while west coast cities toggle between very humid and moderately humid and show more scattered rain through the year.</p>
-<p class="muted" style="1em 0 0">Furthermore, A waffle chart has been created to show the individual stations that fall in a particular band for that year. Year can be filtered using the filter that allows us to filter years. </p>
-        </aside>
-          <p class="muted" style="margin:0">
-          </p>
+          <p class="lead">Variations in Humidity across Peninsular Malaysia</p>
+          <p class="muted">From 2014 to 2020, most weather stations in Peninsular Malaysia showed very high humidity of 80&nbsp;percent or more. The share was highest in 2017 at 85&nbsp;percent and lowest in 2016 and 2019 at 59&nbsp;percent. It went up a little again in 2020 to 67&nbsp;percent.</p>
+          <p class="muted" style="margin:1em 0 0">This agrees with your summary that the highlands and east coast stay very humid most of the time, while some urban and west coast stations drop slightly to the 75–80&nbsp;percent range. The data also fits the rainfall pattern since years with higher humidity usually have more wet days during the monsoon months.</p>
         </aside>
       </div>
     </section>
@@ -199,70 +107,59 @@ Overall, where rainfall is higher, temperatures stay lower. Where rainfall is lo
         <div class="left"><div id="barVis" aria-label="Water production grouped bar chart"></div></div>
         <div class="divider" aria-hidden="true"></div>
         <aside class="right" aria-label="Description panel">
-          <p style="font-weight:800;margin:0 0 8px">Water production across years in Peninsular Malaysia .</p>
-          <p class="muted" style="margin:0">Water production across Malaysian states stays fairly stable between 2014 and 2020, with a clear and consistent pattern where Selangor leads by a large margin every year. Selangor’s water output rises gradually from about 4,584 million litres in 2014 to nearly 4,967 million litres in 2020, reflecting its high urban population and industrial demand. Johor and Kedah follow as the next largest producers, both maintaining outputs between 1,400–1,900 million litres across the years. On the other end, Perlis remains the lowest producer throughout the period, averaging only around 220–250 million litres, which matches its smaller size and population.</p>
-          <p class="muted" style="1em 0 0">This production pattern aligns closely with rainfall distribution and population needs. States like Selangor, Johor, and Kedah, which receive steady rainfall and have dense urban areas, require and produce more treated water to meet domestic and industrial use. In contrast, Perlis and Kelantan, though occasionally hit by heavy rains, have fewer treatment plants and smaller demand, leading to lower production.</p>
-<p class="muted" style="1em 0 0">Overall, the chart highlights how rainfall patterns influence water availability, but population and industrial demand are the main forces shaping state-level production. </p>
-        </aside>
+          <p class="lead">Water production across years in Peninsular Malaysia.</p>
+          <p class="muted">From 2014 to 2020, Selangor recorded the highest water production, rising from about 4,594 to 4,967&nbsp;million litres, followed by Johor and Kedah, while Perlis remained the lowest, below 300&nbsp;million litres.</p>
+          <p class="muted" style="margin:1em 0 0">This pattern relates to rainfall and population, as states with steady rainfall and higher demand, like Selangor and Johor, produce more water. In contrast, states with fewer facilities and lower demand, such as Perlis and Kelantan, record lower production.</p>
         </aside>
       </div>
     </section>
 
     <section class="card">
-      <div class="card-header"><h1> Average Rainfall vs Water Production (2014–2020)</h1></div>
+      <div class="card-header"><h1>Average Rainfall vs Water Production (2014–2020)</h1></div>
       <div class="card-body">
         <div class="left"><div id="scatterVis" aria-label="Scatter plot: rainfall vs water production"></div></div>
         <div class="divider" aria-hidden="true"></div>
         <aside class="right" aria-label="Description panel">
-           <p style="font-weight:800;margin:0 0 8px">Relationship between Average Rainfall and Water production</p>
-          <p class="muted" style="margin:0">From 2014 to 2020, Malaysian states show a weak negative relationship between rainfall and water production. Selangor consistently records the highest water production (around 4,600–5,000 million litres daily) despite moderate rainfall, while Terengganu and Kelantan, which have higher rainfall, produce much less water due to lower demand and smaller treatment capacity.</p>
-<p class="muted" style="1em 0 0">This pattern shows that water production depends more on population and infrastructure than on rainfall levels. Perlis remains lowest in both rainfall and output each year, reflecting its smaller population and system scale. The downward trendline across all years confirms that more rainfall doesn’t always mean more water production, since urban demand and supply systems are the key drivers.</p>
+          <p class="lead">Relationship between Average Rainfall and Water production</p>
+          <p class="muted">From 2014 to 2020, Selangor had the highest water production despite moderate rainfall, while Terengganu and Kelantan showed high rainfall but lower production. Perlis remained the lowest. Overall, the charts show a weak negative link between rainfall and production, with population and demand being the main factors.</p>
         </aside>
       </div>
     </section>
 
     <section class="card">
-      <div class="card-header"><h1>Rain, Heat, and Humidity patterns (2014–2020)</h1></div>
+      <div class="card-header"><h1>Rain, Temperature, and Humidity patterns (2014–2020)</h1></div>
       <div class="card-body">
         <div class="left"><div id="bubbleVis" aria-label="Rainfall Intensity vs Water Production (2014–2020)"></div></div>
         <div class="divider" aria-hidden="true"></div>
         <aside class="right" aria-label="Description panel">
-          <p style="font-weight:800;margin:0 0 8px">Compare three series for one state.</p>
-          <p class="muted" style="margin:0">Each line chart compares rainfall, temperature, and humidity after normalizing them between 0 and 1, using the formula (value – min)/(max – min). This lets all three indicators, measured in different units, share the same scale so we can easily spot when they rise or fall together.</p>
-          <p class="muted" style="1em 0 0">From 2014 to 2020, most states show that temperature and humidity move in opposite directions when temperature rises, humidity usually drops. Years like 2016 show clear hot-and-dry peaks with high temperature and low rainfall across many states, while 2020 is generally wetter and cooler, as both rainfall and humidity climb. Coastal states such as Terengganu and Pahang stay more humid even when rainfall dips, showing their strong maritime influence. In contrast, urban areas like Selangor and Penang show sharper temperature spikes, likely from the heat-island effect.</p>
-          <p class="muted" style="1em 0 0">Overall, the pattern suggests that rainfall and humidity are closely linked, while temperature acts in reverse, reflecting the natural balance between heat and moisture across Peninsular Malaysia’s climate zones.</p>
-        
+          <p class="lead">Rain, Temperature and Humidity across Peninsular Malaysia in a given time period.</p>
+          <p class="muted">The chart compares rainfall, temperature, and humidity after normalizing them with the formula (value – minimum) / (maximum – minimum) to match their scales. From 2014 to 2020, temperature and humidity often move in opposite directions. Hot, dry years like 2016 contrast with wetter, cooler years like 2020. Coastal states stay more humid, while urban areas show sharper temperature rises, showing the balance between heat and moisture.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="card" id="metadata">
+      <div class="card-header"><h1>Meta Data Provided</h1></div>
+      <div class="card-body stack">
+        <aside class="under" aria-label="Meta data">
+          <p class="meta-heading">Data Sources:</p>
+          <ul class="meta-list">
+            <li><a href="https://open.dosm.gov.my/data-catalogue/water_production" target="_blank" rel="noopener">Department of Statistics Malaysia — Water Production</a></li>
+            <li><a href="https://archive.data.gov.my/data/dataset/daily-projected-rainfall-ccsm3a1b-by-state-in-peninsular-malaysia" target="_blank" rel="noopener">Data.gov.my — Daily Projected Rainfall (CCSM3 A1B) by State</a></li>
+            <li><a href="https://www.kaggle.com/datasets/mypapit/malaysiancity" target="_blank" rel="noopener">Kaggle — Malaysian City Dataset</a></li>
+            <li><a href="https://archive.data.gov.my/data/dataset/mean-temperature-rainfall-and-mean-relative-humidity-malaysia" target="_blank" rel="noopener">Data.gov.my — Mean Temperature, Rainfall and Relative Humidity (Malaysia)</a></li>
+          </ul>
+
+          <p class="meta-heading" style="margin-top:14px">Visualisation Author:</p>
+          <p class="muted">Nashmia Shakeel</p>
+
+          <p class="meta-heading" style="margin-top:14px">Date Created:</p>
+          <p class="muted">20 Oct 2025</p>
         </aside>
       </div>
     </section>
   </main>
 
-  <script>
-    const bust=`?v=${Date.now()}`;
-
-    fetch('map.vl.json'+bust,{cache:'no-store'})
-      .then(r=>r.json()).then(spec=>{spec.width="container";spec.autosize={type:"fit",contains:"padding"};vegaEmbed('#mapVis',spec,{actions:false,renderer:'svg'});});
-
-    fetch('line.vl.json'+bust,{cache:'no-store'})
-      .then(r=>r.json()).then(spec=>{spec.width="container";spec.autosize={type:"fit",contains:"padding"};vegaEmbed('#lineVis',spec,{actions:false,renderer:'svg'});});
-
-    fetch('heatmap.vl.json'+bust,{cache:'no-store'})
-      .then(r=>r.json()).then(spec=>{spec.width="container";spec.autosize={type:"fit",contains:"padding"};vegaEmbed('#heatmapVis',spec,{actions:false,renderer:'svg'});});
-
-    fetch('waffle.vl.json'+bust,{cache:'no-store'})
-      .then(r=>r.json()).then(spec=>{spec.width="container";spec.autosize={type:"fit",contains:"padding"};vegaEmbed('#lollipopVis',spec,{actions:false,renderer:'svg'});});
-
-    fetch('donut.vl.json'+bust,{cache:'no-store'})
-      .then(r=>r.json()).then(spec=>{spec.width="container";spec.autosize={type:"fit",contains:"padding"};vegaEmbed('#donutVis',spec,{actions:false,renderer:'svg'});});
-
-    fetch('barchart.vl.json'+bust,{cache:'no-store'})
-      .then(r=>r.json()).then(spec=>{spec.width="container";spec.autosize={type:"fit",contains:"padding"};vegaEmbed('#barVis',spec,{actions:false,renderer:'svg'});});
-
-    fetch('scatter.vl.json'+bust,{cache:'no-store'})
-      .then(r=>r.json()).then(spec=>{spec.width="container";spec.autosize={type:"fit",contains:"padding"};vegaEmbed('#scatterVis',spec,{actions:false,renderer:'svg'});});
-
-    fetch('bubble.vl.json'+bust,{cache:'no-store'})
-      .then(r=>r.json()).then(spec=>{spec.width="container";spec.autosize={type:"fit",contains:"padding"};vegaEmbed('#bubbleVis',spec,{actions:false,renderer:'svg'});});
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>

@@ -1,6 +1,5 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
- 
   "background": "#ffffff",
   "height": 480,
   "padding": { "left": 60, "right": 24, "top": 10, "bottom": 50 },
@@ -11,8 +10,11 @@
   },
 
   "params": [
-    { "name": "YearPick", "value": 2020,
-      "bind": { "input": "select", "name": "Year: ", "options": [2014,2015,2016,2017,2018,2019,2020] } }
+    {
+      "name": "YearPick",
+      "value": 2020,
+      "bind": { "input": "select", "name": "Year: ", "options": [2014,2015,2016,2017,2018,2019,2020] }
+    }
   ],
 
   "transform": [
@@ -41,11 +43,10 @@
         ]
       }
     },
-
-    { "transform": [ { "regression": "Prod", "on": "Rain" } ],
-      "mark": { "type": "line", "strokeDash": [6,4], "strokeWidth": 2, "color": "#6b7280" } },
-
-   
+    {
+      "transform": [ { "regression": "Prod", "on": "Rain" } ],
+      "mark": { "type": "line", "strokeDash": [6,4], "strokeWidth": 2, "color": "#6b7280" }
+    },
     {
       "transform": [
         { "window": [ { "op": "rank", "as": "r" } ], "sort": [ { "field": "Prod", "order": "descending" } ] },
@@ -69,7 +70,7 @@
         { "filter": "datum.rankProd == 1 && datum.rankRain == 1" },
         { "calculate": "'Lowest rainfall & production: ' + datum.State + ' (' + format(datum.Rain, ',.2f') + ' mm, ' + format(datum.Prod, ',.0f') + ')'", "as": "label" }
       ],
-      "mark": { "type": "text", "fontSize": 12,"fontWeight": "bold", "fill": "#111827", "align": "right" },
+      "mark": { "type": "text", "fontSize": 12, "fontWeight": "bold", "fill": "#111827", "align": "right" },
       "encoding": { "x": { "value": 620 }, "y": { "value": 64 }, "text": { "field": "label" } }
     },
     {
@@ -77,7 +78,7 @@
         { "filter": "datum.rankProd == 1 && datum.rankRain != 1" },
         { "calculate": "'Lowest production: ' + datum.State + ' (' + format(datum.Prod, ',.0f') + ')'", "as": "label" }
       ],
-      "mark": { "type": "text", "fontSize": 12, "fontWeight": "bold","fill": "#111827", "align": "right" },
+      "mark": { "type": "text", "fontSize": 12, "fontWeight": "bold", "fill": "#111827", "align": "right" },
       "encoding": { "x": { "value": 620 }, "y": { "value": 84 }, "text": { "field": "label" } }
     },
     {
@@ -85,10 +86,18 @@
         { "filter": "datum.rankRain == 1 && datum.rankProd != 1" },
         { "calculate": "'Lowest rainfall: ' + datum.State + ' (' + format(datum.Rain, ',.2f') + ' mm)'", "as": "label" }
       ],
-      "mark": { "type": "text", "fontSize": 12, "fontWeight": "bold","fill": "#111827", "align": "right" },
+      "mark": { "type": "text", "fontSize": 12, "fontWeight": "bold", "fill": "#111827", "align": "right" },
       "encoding": { "x": { "value": 620 }, "y": { "value": 104 }, "text": { "field": "label" } }
     }
   ],
 
-  "config": { "view": { "stroke": null } }
+  "config": {
+    "view": { "stroke": null },
+    "font": "Inter",
+    "title": { "font": "Inter" },
+    "axis": { "labelFont": "Inter", "titleFont": "Inter", "titleFontWeight": "bold" },
+    "legend": { "labelFont": "Inter", "titleFont": "Inter" },
+    "header": { "labelFont": "Inter", "titleFont": "Inter" },
+    "text": { "font": "Inter" }
+  }
 }

@@ -1,9 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  
 
-  "padding": { "top": 16, "right": 8, "bottom": 28, "left": 6 },   
-
+  "padding": { "top": 16, "right": 8, "bottom": 28, "left": 6 },
   "columns": 3,
 
   "params": [
@@ -16,7 +14,7 @@
 
   "data": {
     "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/monthly_rainfall_mean_only%20(1).csv",
-    "format": {"type": "csv"}
+    "format": { "type": "csv" }
   },
 
   "transform": [
@@ -39,49 +37,75 @@
     "height": 140,
     "layer": [
       {
-        "mark": {"type": "area", "opacity": 0.18, "clip": true},
+        "mark": { "type": "area", "opacity": 0.18, "clip": true },
         "encoding": {
           "x": {
-            "field": "mnum", "type": "ordinal", "title": null,
-            "scale": {"domain": [1,2,3,4,5,6,7,8,9,10,11,12]},
+            "field": "mnum",
+            "type": "ordinal",
+            "title": null,
+            "scale": { "domain": [1,2,3,4,5,6,7,8,9,10,11,12] },
             "axis": {
               "values": [1,2,3,4,5,6,7,8,9,10,11,12],
               "labelExpr": "['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][datum.value-1]",
-              "labelAngle": 0, "labelFontSize": 10, "tickSize": 0, "labelOverlap": false
+              "labelAngle": 0,
+              "labelFontSize": 10,
+              "tickSize": 0,
+              "labelOverlap": false,
+              "labelFlush": false,
+              "labelBound": false,
+              "labelLimit": 200
             }
           },
           "y": {
-            "field": "mm", "type": "quantitative",
+            "field": "mm",
+            "type": "quantitative",
             "title": "Average rainfall (mm)",
-            "scale": {"zero": true, "nice": true},
+            "scale": { "zero": true, "nice": true },
             "axis": {
               "labelFontSize": 10,
               "titleFontSize": 10,
-              "offset": 0,          
-              "titlePadding": 2,    
-              "labelPadding": 2     
+              "offset": 0,
+              "titlePadding": 2,
+              "labelPadding": 2
             }
           },
           "color": {
-            "field": "state", "type": "nominal",
+            "field": "state",
+            "type": "nominal",
             "legend": null,
             "scale": { "scheme": "tableau10" }
           },
           "tooltip": [
-            {"field": "state", "title": "State"},
-            {"field": "year_num", "type": "quantitative", "title": "Year", "format": "d"},
-            {"field": "month_label", "title": "Month"},
-            {"field": "mm", "type": "quantitative", "title": "Average rainfall (mm)", "format": ".2f"}
+            { "field": "state", "title": "State" },
+            { "field": "year_num", "type": "quantitative", "title": "Year", "format": "d" },
+            { "field": "month_label", "title": "Month" },
+            { "field": "mm", "type": "quantitative", "title": "Average rainfall (mm)", "format": ".2f" }
           ]
         }
       },
       {
-        "mark": {"type": "line", "point": {"filled": true, "size": 22}, "strokeWidth": 2, "clip": true},
+        "mark": { "type": "line", "point": { "filled": true, "size": 22 }, "strokeWidth": 2, "clip": true },
         "encoding": {
-          "x": {"field": "mnum", "type": "ordinal"},
-          "y": {"field": "mm", "type": "quantitative"},
+          "x": {
+            "field": "mnum",
+            "type": "ordinal",
+            "scale": { "domain": [1,2,3,4,5,6,7,8,9,10,11,12] },
+            "axis": {
+              "values": [1,2,3,4,5,6,7,8,9,10,11,12],
+              "labelExpr": "['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][datum.value-1]",
+              "labelAngle": 0,
+              "labelFontSize": 10,
+              "tickSize": 0,
+              "labelOverlap": false,
+              "labelFlush": false,
+              "labelBound": false,
+              "labelLimit": 200
+            }
+          },
+          "y": { "field": "mm", "type": "quantitative" },
           "color": {
-            "field": "state", "type": "nominal",
+            "field": "state",
+            "type": "nominal",
             "legend": null,
             "scale": { "scheme": "tableau10" }
           }
@@ -90,10 +114,17 @@
     ]
   },
 
-  "resolve": { "scale": { "y": "independent" } },
+  "resolve": { "scale": { "y": "independent" }, "axis": { "x": "independent" } },
 
   "config": {
     "view": { "stroke": null },
-    "axis": { "grid": true }
+    "axis": { "grid": true, "gridColor": "#e5e7eb" },
+    "font": "Inter",
+    "title": { "font": "Inter" },
+    "axisX": { "labelFont": "Inter", "titleFont": "Inter" },
+    "axisY": { "labelFont": "Inter", "titleFont": "Inter" },
+    "legend": { "labelFont": "Inter", "titleFont": "Inter" },
+    "header": { "labelFont": "Inter", "titleFont": "Inter" },
+    "text": { "font": "Inter" }
   }
 }

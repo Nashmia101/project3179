@@ -2,17 +2,18 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "usermeta": {
     "embedOptions": {
-      "tooltip": {
-        "anchor": "left",
-        "offsetX": 8,
-        "style": { "textAlign": "left" }
-      }
+      "tooltip": { "anchor": "left", "offsetX": 8, "style": { "textAlign": "left" } }
     }
   },
-  
   "config": {
     "view": { "stroke": null },
-    "background": "#f3f4f6"
+    "background": "#f3f4f6",
+    "font": "Inter",
+    "title": { "font": "Inter" },
+    "axis": { "labelFont": "Inter", "titleFont": "Inter" },
+    "legend": { "labelFont": "Inter", "titleFont": "Inter" },
+    "header": { "labelFont": "Inter", "titleFont": "Inter" },
+    "text": { "font": "Inter" }
   },
   "data": {
     "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/daily_rainfall_peninsular_my_2014_2020_ccsm3a1fi_fixed.csv",

@@ -3,7 +3,16 @@
   "width": 1200,
   "height": 500,
   "projection": { "type": "mercator", "center": [103.25, 4.2], "scale": 4300, "translate": [400, 250] },
-  "config": {"view": {"stroke": "transparent"}},
+
+  "config": {
+    "view": { "stroke": "transparent" },
+    "font": "Inter",
+    "title": { "font": "Inter" },
+    "axis":  { "labelFont": "Inter", "titleFont": "Inter" },
+    "legend":{ "labelFont": "Inter", "titleFont": "Inter" },
+    "header":{ "labelFont": "Inter", "titleFont": "Inter" },
+    "text":  { "font": "Inter" }
+  },
 
   "params": [
     {
@@ -21,9 +30,8 @@
   "layer": [
     {
       "data": { "graticule": { "extent": [[99, 0], [106, 8]], "step": [1, 1] } },
-      "mark": { "type": "geoshape", "fill": null, "stroke": "lightgrey", "strokeWidth": 0.5 }
+      "mark": { "type": "geoshape", "fill": null, "stroke": "#cbd5e1", "strokeWidth": 0.5 }
     },
-
     {
       "data": {
         "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/ne_10m.json",
@@ -31,7 +39,6 @@
       },
       "mark": { "type": "geoshape", "fill": "lightgrey", "stroke": "black", "strokeWidth": 0.6 }
     },
-
     {
       "data": { "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/rainfall_state_year_avg.csv" },
       "transform": [
@@ -58,17 +65,16 @@
           "type": "quantitative",
           "title": "Average daily rainfall (mm)",
           "scale": { "scheme": "tealblues" },
-         "legend": {
-  "orient": "none",         
-  "direction": "horizontal",
-  "legendX": 600,           
-  "legendY": 220,           
-  "gradientLength": 200,
-  "gradientThickness": 12,
-  "title": "Average daily rainfall (mm)",
-  "padding": 4
- 
-}
+          "legend": {
+            "orient": "none",
+            "direction": "horizontal",
+            "legendX": 600,
+            "legendY": 220,
+            "gradientLength": 200,
+            "gradientThickness": 12,
+            "title": "Average daily rainfall (mm)",
+            "padding": 4
+          }
         },
         "tooltip": [
           { "field": "State", "title": "State" },
@@ -77,7 +83,6 @@
         ]
       }
     },
-
     {
       "data": { "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/rainfall_state_year_avg.csv" },
       "transform": [
@@ -108,7 +113,6 @@
         }
       ]
     },
-
     {
       "data": { "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/district_centroids_peninsular_notown.csv" },
       "transform": [

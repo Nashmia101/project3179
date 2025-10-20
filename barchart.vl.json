@@ -14,16 +14,17 @@
     {
       "name": "YearPick",
       "value": 2020,
-      "bind": {
-        "input": "select",
-        "name": "Year: ",
-        "options": [2014, 2015, 2016, 2017, 2018, 2019, 2020]
-      }
+      "bind": { "input": "select", "name": "Year: ", "options": [2014, 2015, 2016, 2017, 2018, 2019, 2020] }
     }
   ],
 
   "transform": [
-    { "filter": "YearPick === 'All' || toNumber(datum.Year) === toNumber(YearPick)" }
+    { "filter": "toNumber(datum.Year) === toNumber(YearPick)" },
+    { "aggregate": [{ "op": "sum", "field": "Water_Production", "as": "WP" }], "groupby": ["State","Year"] },
+    { "window": [{ "op": "rank", "as": "rank_desc" }], "sort": [{ "field": "WP", "order": "descending" }] },
+    { "window": [{ "op": "rank", "as": "rank_asc" }], "sort": [{ "field": "WP", "order": "ascending" }] },
+    { "calculate": "datum.rank_desc === 1", "as": "is_max" },
+    { "calculate": "datum.rank_asc === 1", "as": "is_min" }
   ],
 
   "layer": [
@@ -36,11 +37,8 @@
           "axis": { "title": "State", "labelAngle": -30, "labelFontSize": 12, "titleFontSize": 13 },
           "scale": { "paddingInner": 0.2 }
         },
-        "xOffset": { "field": "Year", "type": "ordinal" },
-        "order": { "field": "Year", "type": "ordinal" },
         "y": {
-          "aggregate": "sum",
-          "field": "Water_Production",
+          "field": "WP",
           "type": "quantitative",
           "title": "Water Production",
           "scale": { "domain": [0, 4500] },
@@ -53,48 +51,45 @@
           }
         },
         "color": {
-          "field": "State",
-          "type": "nominal",
-          "legend": { "title": "State" }
+          "condition": [
+            { "test": "datum.is_max", "value": "#22c55e" },
+            { "test": "datum.is_min", "value": "#3b82f6" }
+          ],
+          "value": "#d1d5db",
+          "legend": null
         },
         "tooltip": [
           { "field": "State", "type": "nominal" },
           { "field": "Year", "type": "ordinal", "title": "Year" },
-          { "aggregate": "sum", "field": "Water_Production", "type": "quantitative", "title": "Water Production", "format": ",.0f" }
+          { "field": "WP", "type": "quantitative", "title": "Water Production", "format": ",.0f" }
         ]
       }
     },
-
     {
       "transform": [
-        { "aggregate": [{ "op": "sum", "field": "Water_Production", "as": "WP" }], "groupby": ["State", "Year"] },
-        { "window": [{ "op": "rank", "as": "r_desc" }], "sort": [{ "field": "WP", "order": "descending" }] },
-        { "filter": "datum.r_desc == 1" },
+        { "filter": "datum.is_max" },
         { "calculate": "'Highest Water Production: ' + datum.State + ' — ' + format(datum.WP, ',.0f') + ' (' + datum.Year + ')'", "as": "ann_high" }
       ],
       "mark": { "type": "text", "fontSize": 13, "fontWeight": "bold", "align": "left", "fill": "#111827" },
-      "encoding": {
-        "x": { "value": 10 },
-        "y": { "value": 24 },
-        "text": { "field": "ann_high", "type": "nominal" }
-      }
+      "encoding": { "x": { "value": 10 }, "y": { "value": 24 }, "text": { "field": "ann_high" } }
     },
-
     {
       "transform": [
-        { "aggregate": [{ "op": "sum", "field": "Water_Production", "as": "WP" }], "groupby": ["State", "Year"] },
-        { "window": [{ "op": "rank", "as": "r_asc" }], "sort": [{ "field": "WP", "order": "ascending" }] },
-        { "filter": "datum.r_asc == 1" },
+        { "filter": "datum.is_min" },
         { "calculate": "'Lowest Water Production: ' + datum.State + ' — ' + format(datum.WP, ',.0f') + ' (' + datum.Year + ')'", "as": "ann_low" }
       ],
-      "mark": { "type": "text", "fontSize": 13, "fontWeight": "bold","align": "left", "fill": "#111827" },
-      "encoding": {
-        "x": { "value": 10 },
-        "y": { "value": 44 },
-        "text": { "field": "ann_low", "type": "nominal" }
-      }
+      "mark": { "type": "text", "fontSize": 13, "fontWeight": "bold", "align": "left", "fill": "#111827" },
+      "encoding": { "x": { "value": 10 }, "y": { "value": 44 }, "text": { "field": "ann_low" } }
     }
   ],
 
-  "config": { "view": { "stroke": null } }
+  "config": {
+    "view": { "stroke": null },
+    "font": "Inter",
+    "title": { "font": "Inter" },
+    "axis": { "labelFont": "Inter", "titleFont": "Inter" },
+    "legend": { "labelFont": "Inter", "titleFont": "Inter" },
+    "header": { "labelFont": "Inter", "titleFont": "Inter" },
+    "text": { "font": "Inter" }
+  }
 }

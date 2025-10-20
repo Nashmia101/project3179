@@ -2,27 +2,57 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "width": 980,
   "height": 540,
-  "config": { "view": { "stroke": null }, "axis": { "grid": true } },
+
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": true, "labelFont": "Inter", "titleFont": "Inter" },
+    "legend": { "labelFont": "Inter", "titleFont": "Inter" },
+    "title": { "font": "Inter" },
+    "header": { "labelFont": "Inter", "titleFont": "Inter" },
+    "text": { "font": "Inter" },
+    "font": "Inter"
+  },
 
   "data": { "url": "https://raw.githubusercontent.com/Nashmia101/project3179/main/state_temp_2014_2020.csv" },
 
   "params": [
-    {"name":"year_selection","value":2020,
-     "bind":{"input":"select","options":[2014,2015,2016,2017,2018,2019,2020],
-             "labels":["2014","2015","2016","2017","2018","2019","2020"],
-             "name":"Select Year: "}},
-    {"name":"metric_selection","value":"Max Temp",
-     "bind":{"input":"select","options":["Min Temp","Max Temp"],"name":"Metric: "}},
-    {"name":"show_labels","value":true,"bind":{"input":"checkbox","name":"Show values "}}
+    {
+      "name": "year_selection",
+      "value": 2020,
+      "bind": {
+        "input": "select",
+        "options": [2014,2015,2016,2017,2018,2019,2020],
+        "labels": ["2014","2015","2016","2017","2018","2019","2020"],
+        "name": "Select Year: "
+      }
+    },
+    {
+      "name": "metric_selection",
+      "value": "Maximum temperature",
+      "bind": {
+        "input": "select",
+        "options": ["Minimum temperature","Maximum temperature"],
+        "name": "Metric: "
+      }
+    },
+    {
+      "name": "show_labels",
+      "value": true,
+      "bind": { "input": "checkbox", "name": "Show values " }
+    }
   ],
 
   "transform": [
-    {"filter":"toNumber(datum.Year)==toNumber(year_selection)"},
-    {"filter":"datum.State!='Sabah' && datum.State!='Sarawak' && datum.State!='Labuan'"},
-    {"calculate":"toNumber(datum.MinTemp_C)","as":"min_c"},
-    {"calculate":"toNumber(datum.MaxTemp_C)","as":"max_c"},
-    {"calculate":"metric_selection == 'Min Temp' ? datum.min_c : datum.max_c","as":"value"},
-    {"calculate":"metric_selection == 'Min Temp' ? 19 : 27","as":"baseline"}
+    { "filter": "toNumber(datum.Year) == toNumber(year_selection)" },
+    { "filter": "datum.State!='Sabah' && datum.State!='Sarawak' && datum.State!='Labuan'" },
+    { "calculate": "toNumber(datum.MinTemp_C)", "as": "min_c" },
+    { "calculate": "toNumber(datum.MaxTemp_C)", "as": "max_c" },
+    { "calculate": "metric_selection == 'Minimum temperature' ? datum.min_c : datum.max_c", "as": "value" },
+    { "calculate": "metric_selection == 'Minimum temperature' ? 19 : 27", "as": "baseline" },
+    { "calculate": "datum.State == 'Wilayah Persekutuan Labuan' ? 'Selangor-Wilayah' : datum.State", "as": "StateLabel" },
+    { "window": [{ "op": "rank", "as": "r_desc" }], "sort": [{ "field": "value", "order": "descending" }] },
+    { "window": [{ "op": "rank", "as": "r_asc" }], "sort": [{ "field": "value", "order": "ascending" }] },
+    { "calculate": "datum.r_desc==1 ? 'max' : (datum.r_asc==1 ? 'min' : 'other')", "as": "which" }
   ],
 
   "layer": [
@@ -30,49 +60,79 @@
       "mark": { "type": "rule", "strokeWidth": 6, "opacity": 0.75 },
       "encoding": {
         "x": {
-          "field": "State", "type": "ordinal",
-          "sort": {"field": "value", "order": "descending"},
+          "field": "StateLabel",
+          "type": "ordinal",
+          "sort": { "field": "value", "order": "descending" },
           "axis": { "title": null, "labelAngle": -35 }
         },
         "y": {
-          "field": "baseline", "type": "quantitative",
-          "scale": { "domain": { "expr": "metric_selection == 'Min Temp' ? [19, 26] : [27, 34]" }, "nice": false }
+          "field": "baseline",
+          "type": "quantitative",
+          "scale": {
+            "domain": { "expr": "metric_selection == 'Minimum temperature' ? [19, 26] : [27, 34]" },
+            "nice": false
+          }
         },
         "y2": { "field": "value" },
-        "color": { "field": "State", "type": "nominal", "legend": null, "scale": { "scheme": "tableau20" } }
+        "color": {
+          "field": "which",
+          "type": "nominal",
+          "legend": null,
+          "scale": { "domain": ["max","min","other"], "range": ["#10b981","#3b82f6","#d1d5db"] }
+        }
       }
     },
 
     {
-      "mark": { "type": "circle", "filled": true, "size": 700, "stroke": null },
+      "mark": { "type": "circle", "filled": true, "size": 1500, "stroke": null },
       "encoding": {
         "x": {
-          "field": "State", "type": "ordinal",
-          "sort": {"field": "value", "order": "descending"},
+          "field": "StateLabel",
+          "type": "ordinal",
+          "sort": { "field": "value", "order": "descending" },
           "axis": { "title": null, "labelAngle": -35 }
         },
         "y": {
-          "field": "value", "type": "quantitative",
-          "scale": { "domain": { "expr": "metric_selection == 'Min Temp' ? [19, 26] : [27, 34]" }, "nice": false },
+          "field": "value",
+          "type": "quantitative",
+          "scale": {
+            "domain": { "expr": "metric_selection == 'Minimum temperature' ? [19, 26] : [27, 34]" },
+            "nice": false
+          },
           "axis": {
             "title": "Temperature (°C)",
-            "values": { "expr": "sequence(metric_selection=='Min Temp'?19:27,(metric_selection=='Min Temp'?26:34)+0.0001,1)" },
+            "values": {
+              "expr": "sequence(metric_selection=='Minimum temperature'?19:27,(metric_selection=='Minimum temperature'?26:34)+0.0001,1)"
+            },
             "tickMinStep": 1
           }
         },
-        "color": { "field": "State", "type": "nominal", "legend": null, "scale": { "scheme": "tableau20" } },
-        "tooltip": [{"field":"State"},{"field":"Year","title":"Year"},{"field":"value","title":"Temperature (°C)","format":".2f"}]
+        "color": {
+          "field": "which",
+          "type": "nominal",
+          "legend": null,
+          "scale": { "domain": ["max","min","other"], "range": ["#10b981","#3b82f6","#d1d5db"] }
+        },
+        "tooltip": [
+          { "field": "StateLabel", "title": "State" },
+          { "field": "Year", "title": "Year" },
+          { "field": "value", "title": "Temperature (°C)", "format": ".2f" }
+        ]
       }
     },
 
     {
-      "transform": [{"filter":"show_labels"}],
-      "mark": { "type": "text", "align": "center", "dy": -8, "fontSize": 11, "fontWeight": "bold", "fill": "#111827" },
+      "transform": [{ "filter": "show_labels" }],
+      "mark": { "type": "text", "align": "center", "dy": -8, "fontSize": 11, "fontWeight": "bold" },
       "encoding": {
-        "x": { "field": "State", "type": "ordinal", "sort": {"field":"value","order":"descending"} },
+        "x": { "field": "StateLabel", "type": "ordinal", "sort": { "field": "value", "order": "descending" } },
         "y": {
-          "field": "value", "type": "quantitative",
-          "scale": { "domain": { "expr": "metric_selection == 'Min Temp' ? [19, 26] : [27, 34]" }, "nice": false }
+          "field": "value",
+          "type": "quantitative",
+          "scale": {
+            "domain": { "expr": "metric_selection == 'Minimum temperature' ? [19, 26] : [27, 34]" },
+            "nice": false
+          }
         },
         "text": { "field": "value", "type": "quantitative", "format": ".2f" }
       }
@@ -80,29 +140,29 @@
 
     {
       "transform": [
-        { "window": [{"op":"rank","as":"r_desc"}], "sort": [{"field":"value","order":"descending"}] },
-        { "filter": "datum.r_desc == 1" },
-        { "calculate": "'Highest ' + metric_selection + ': ' + datum.State + ' — ' + format(datum.value, '.2f') + '°C (' + year_selection + ')'", "as": "ann_high" }
+        { "joinaggregate": [{"op":"max","field":"value","as":"val_max"}] },
+        { "calculate": "datum.value == datum.val_max ? 1 : 0", "as": "is_max_num" },
+        { "joinaggregate": [{"op":"sum","field":"is_max_num","as":"max_count"}] },
+        {
+          "calculate": "(metric_selection=='Maximum temperature' ? 'Highest Maximum Temperature: ' : 'Highest Minimum Temperature: ') + format(datum.val_max, '.2f') + '°C (' + year_selection + ')' + (datum.max_count > 1 ? ' — tie across ' + datum.max_count + ' states' : '')",
+          "as": "ann_high"
+        }
       ],
-      "mark": { "type": "text", "fontSize": 13,  "fontWeight":"bold", "align": "right", "fill": "#111827" },
-      "encoding": {
-        "x": { "value": 750 },
-        "y": { "value": 24 },
-        "text": { "field": "ann_high", "type": "nominal" }
-      }
+      "mark": { "type": "text", "fontSize": 13, "fontWeight": "bold", "align": "right", "fill": "#111827" },
+      "encoding": { "x": { "value": 750 }, "y": { "value": 24 }, "text": { "field": "ann_high" } }
     },
     {
       "transform": [
-        { "window": [{"op":"rank","as":"r_asc"}], "sort": [{"field":"value","order":"ascending"}] },
-        { "filter": "datum.r_asc == 1" },
-        { "calculate": "'Lowest ' + metric_selection + ': ' + datum.State + ' — ' + format(datum.value, '.2f') + '°C (' + year_selection + ')'", "as": "ann_low" }
+        { "joinaggregate": [{"op":"min","field":"value","as":"val_min"}] },
+        { "calculate": "datum.value == datum.val_min ? 1 : 0", "as": "is_min_num" },
+        { "joinaggregate": [{"op":"sum","field":"is_min_num","as":"min_count"}] },
+        {
+          "calculate": "(metric_selection=='Maximum temperature' ? 'Lowest Maximum Temperature: ' : 'Lowest Minimum Temperature: ') + format(datum.val_min, '.2f') + '°C (' + year_selection + ')' + (datum.min_count > 1 ? ' — tie across ' + datum.min_count + ' states' : '')",
+          "as": "ann_low"
+        }
       ],
-      "mark": { "type": "text", "fontSize": 13, "fontWeight":"bold", "align": "right", "fill": "#111827" },
-      "encoding": {
-        "x": { "value": 750 },
-        "y": { "value": 44 },
-        "text": { "field": "ann_low", "type": "nominal" }
-      }
+      "mark": { "type": "text", "fontSize": 13, "fontWeight": "bold", "align": "right", "fill": "#111827"},
+      "encoding": { "x": { "value": 750 }, "y": { "value": 44 }, "text": { "field": "ann_low" } }
     }
   ]
 }

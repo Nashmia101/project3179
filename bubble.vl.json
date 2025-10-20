@@ -1,6 +1,5 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  
   "width": 900,
   "height": 420,
 
@@ -27,14 +26,8 @@
     { "calculate": "toNumber(datum.Avg_Rainfall_mm)", "as": "Rain_mm" },
     { "calculate": "toNumber(datum.MinMeanTemp_C)", "as": "Temp_c" },
     { "calculate": "toNumber(datum.Humidity)", "as": "Hum_pct" },
-
     { "fold": ["Rain_mm","Temp_c","Hum_pct"], "as": ["Metric", "Value"] },
-
-    {
-      "calculate": "datum.Metric === 'Rain_mm' ? 'Rainfall (mm)' : datum.Metric === 'Temp_c' ? 'Temperature (°C)' : 'Humidity (%)'",
-      "as": "Series"
-    },
-
+    { "calculate": "datum.Metric === 'Rain_mm' ? 'Rainfall (mm)' : datum.Metric === 'Temp_c' ? 'Temperature (°C)' : 'Humidity (%)'", "as": "Series" },
     {
       "window": [
         {"op": "min", "field": "Value", "as": "vmin"},
@@ -59,13 +52,13 @@
           "field": "Index01", "type": "quantitative",
           "title": "Relative level (0–1, min–max per series)"
         },
-        "color": { "field": "Series", "type": "nominal", "title": null ,"scale": { "range": ["#9467bd", "#1f77b4", "#2ca02c"] } },
+        "color": { "field": "Series", "type": "nominal", "title": null, "scale": { "range": ["#9467bd", "#1f77b4", "#2ca02c"] } },
         "tooltip": [
           { "field": "State", "title": "State" },
           { "field": "Year_num", "title": "Year", "format": "d" },
-          { "field": "Series", "title": "Series" },
-          { "field": "Value", "title": "Raw value", "format": ".2f" },
-          { "field": "Index01", "title": "Scaled (0–1)", "format": ".2f" }
+          { "field": "Series", "title": "Climate Variable" },
+          { "field": "Value", "title": "Actual Value", "format": ".2f" },
+          { "field": "Index01", "title": "Normalized Index (0-1)", "format": ".2f" }
         ]
       }
     },
@@ -77,6 +70,11 @@
 
   "config": {
     "view": {"stroke": null},
-    "axis": {"grid": true}
+    "axis": {"grid": true, "labelFont": "Inter", "titleFont": "Inter"},
+    "legend": {"labelFont": "Inter", "titleFont": "Inter"},
+    "title": {"font": "Inter"},
+    "header": {"labelFont": "Inter", "titleFont": "Inter"},
+    "text": {"font": "Inter"},
+    "font": "Inter"
   }
 }
