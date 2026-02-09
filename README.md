@@ -1,13 +1,13 @@
 # Climate and Water Analytics in Peninsular Malaysia (2014–2020)
 
 ## Live Dashboard  
-https://nashmia101.github.io/project3179/
+https://nashmia101.github.io/climate-water-analytics-malaysia/
 
 ## Repository  
-https://github.com/Nashmia101/project3179
+https://github.com/Nashmia101/climate-water-analytics-malaysia/
 
 ## Visualization Design  
-https://github.com/Nashmia101/project3179/blob/main/5sheets_design.pdf
+https://github.com/Nashmia101/climate-water-analytics-malaysia/blob/main/5sheets_design.pdf
 
 ---
 
